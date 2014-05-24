@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.IO;
 using Xunit;
 
@@ -21,16 +22,6 @@ namespace BackMeUp.Specs.Features.BackupCreation
         }
 
         [Fact(DisplayName = "Backup directory created if it doesn't exist")]
-        public void BackupDirectoryCreatedIfNotExists()
-        {
-            var backup = new BackupCreator(_backupDirectory, _appDataDirectory, _programFilesDirectory,
-                _relativeAppDataLocation, _relativeProgramFilesLocation);
-            backup.CreateBackup();
-
-            Assert.True(new DirectoryInfo(_backupDirectory).Exists);
-        }
-
-        [Fact(DisplayName = "No exception if Backup directory already exists")]
         public void BackupDirectoryCreatedIfNotExists()
         {
             var backup = new BackupCreator(_backupDirectory, _appDataDirectory, _programFilesDirectory,
@@ -71,6 +62,8 @@ namespace BackMeUp.Specs.Features.BackupCreation
         public string BackupDirectory { get; set; }
         public string AppDataDirectory { get; set; }
         public string ProgramFilesDirectory { get; set; }
+        public string RelativeAppDataLocation { get; set; }
+        public string RelativeProgramFilesLocation { get; set; }
     }
 
     public class BackupCreator
@@ -104,6 +97,28 @@ namespace BackMeUp.Specs.Features.BackupCreation
         {
                 
         }
+
+        public bool CheckDirectoryExists(string directory)
+        {
+            return new DirectoryInfo(directory).Exists;
+        }
+
+        public void CreateDirectory(string directory)
+        {
+            
+        }
+
+        public void CopyAllFiles(DirectoryInfo sourceDirectory, DirectoryInfo destinationDirectory)
+        {
+            
+        }
+
+        public void CopyFile()
+    }
+
+    public class fileHandler
+    {
+        public void 
     }
 
     public class backupCreator
