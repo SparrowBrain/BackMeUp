@@ -19,19 +19,18 @@ namespace BackMeUp
     public class BackupCreator
     {
         private readonly string _backupDirectory;
-        private readonly string _appDataDirectory;
-        private readonly string _programFilesDirectory;
         private readonly string _relativeAppDataLocation;
         private readonly string _relativeProgramFilesLocation;
 
-        public BackupCreator(string backupDirectory, string appDataDirectory, string programFilesDirectory, string relativeAppDataLocation, string relativeProgramFilesLocation)
+        public BackupCreator(string backupDirectory, string relativeAppDataLocation, string relativeProgramFilesLocation)
         {
             _backupDirectory = backupDirectory;
-            _appDataDirectory = appDataDirectory;
-            _programFilesDirectory = programFilesDirectory;
             _relativeAppDataLocation = relativeAppDataLocation;
             _relativeProgramFilesLocation = relativeProgramFilesLocation;
         }
+
+        public BackupCreator(Configuration configuration):this(configuration.BackupDirectory, configuration.RelativeAppDataLocation,configuration.RelativeProgramFilesLocation)
+        { }
 
         public void CreateBackup(FileInfo spoolFileInfo, DirectoryInfo savegamesDirectoryInfo, string name)
         {
@@ -42,8 +41,8 @@ namespace BackMeUp
             }
 
             name = ReplaceInvalidCharacters(name);
-            var backupFolderName = string.Format("{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd_HHmmss"), name);
-            var backupDirectory = Path.Combine(_backupDirectory, backupFolderName);
+            var backupFolderName = string.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd_HHmmss"));
+            var backupDirectory = Path.Combine(_backupDirectory, name, backupFolderName);
 
             var appDataBackupFileInfo = GetAppDataBackupPath(spoolFileInfo, backupDirectory);
             var programFilsBackupPath = GetProgramFilesBackupPath(savegamesDirectoryInfo, backupDirectory);
@@ -98,15 +97,5 @@ namespace BackMeUp
             var backupPath = Path.Combine(savegameBackupDirectory, savegameDirectoryInfo.Name);
             return backupPath;
         }
-    }
-
-
-    public class Configuration
-    {
-        public string BackupDirectory { get; set; }
-        public string AppDataDirectory { get; set; }
-        public string ProgramFilesDirectory { get; set; }
-        public string RelativeAppDataLocation { get; set; }
-        public string RelativeProgramFilesLocation { get; set; }
     }
 }
