@@ -33,7 +33,7 @@ namespace BackMeUp
             _relativeProgramFilesLocation = relativeProgramFilesLocation;
         }
 
-        public void CreateBackup(string spoolFileName, string savegamesDirectoryName, string name)
+        public void CreateBackup(FileInfo spoolFileInfo, DirectoryInfo savegamesDirectoryInfo, string name)
         {
             var directoryInfo = new DirectoryInfo(_backupDirectory);
             if (!directoryInfo.Exists)
@@ -41,19 +41,32 @@ namespace BackMeUp
                 directoryInfo.Create();
             }
 
+            name = ReplaceInvalidCharacters(name);
             var backupFolderName = string.Format("{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd_HHmmss"), name);
+            var backupDirectory = Path.Combine(_backupDirectory, backupFolderName);
 
-            var appDataPaths = GetAppDataPaths(spoolFileName, Path.Combine(_backupDirectory, backupFolderName));
-            
-            var programFilesSource = Path.Combine(_programFilesDirectory, _relativeProgramFilesLocation, savegamesDirectoryName);
-            var programFilesDestination = Path.Combine(_backupDirectory, backupFolderName, _relativeProgramFilesLocation, savegamesDirectoryName);
+            var appDataBackupFileInfo = GetAppDataBackupPath(spoolFileInfo, backupDirectory);
+            var programFilsBackupPath = GetProgramFilesBackupPath(savegamesDirectoryInfo, backupDirectory);
 
-            if (!Directory.Exists(Path.GetDirectoryName(appDataPaths.Item2)))
+            if (!Directory.Exists(appDataBackupFileInfo.DirectoryName))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(appDataPaths.Item2));
+                Directory.CreateDirectory(appDataBackupFileInfo.DirectoryName);
             }
-            File.Copy(appDataPaths.Item1, appDataPaths.Item2);
-            //CopyDirectory(programFilesSource, programFilesDestination);
+
+            File.Copy(spoolFileInfo.FullName, appDataBackupFileInfo.FullName);
+            CopyDirectory(savegamesDirectoryInfo.FullName, programFilsBackupPath);
+        }
+
+        public string ReplaceInvalidCharacters(string path)
+        {
+            foreach (var invalidCharacter in Path.GetInvalidPathChars())
+            {
+                if (path.Contains(invalidCharacter))
+                {
+                    path = path.Replace(invalidCharacter, '_');
+                }
+            }
+            return path;
         }
 
         public void CopyDirectory(string sourceDirectory, string destinationDirectory)
@@ -68,28 +81,22 @@ namespace BackMeUp
             }
         }
 
-        public Tuple<string, string> GetAppDataPaths(string spoolFileName, string backupDirectory)
+        public FileInfo GetAppDataBackupPath(FileInfo spoolFileInfo, string backupDirectory)
         {
-            var appData = new DirectoryInfo(AppDataSourceDirectory);
-            var fileInfos = appData.GetFileSystemInfos(spoolFileName, SearchOption.AllDirectories);
+            var userDirecotryName = spoolFileInfo.Directory.Name;
+            var spoolBackupDirectory = Path.Combine(backupDirectory, "AppData", _relativeAppDataLocation, userDirecotryName);
 
-            var spoolFileInfo = fileInfos.OrderByDescending(x => x.LastWriteTime).FirstOrDefault();
-            var scrambledDirectoryName = new DirectoryInfo(Path.GetDirectoryName(spoolFileInfo.FullName)).Name;
-
-            var source = Path.Combine(AppDataSourceDirectory, scrambledDirectoryName, spoolFileName);
-            var destination = Path.Combine(backupDirectory, _relativeAppDataLocation, scrambledDirectoryName, spoolFileName);
-
-            return Tuple.Create(source, destination);
+            var backupPath = Path.Combine(spoolBackupDirectory, spoolFileInfo.Name);
+            return new FileInfo(backupPath);
         }
 
-        public string AppDataSourceDirectory
+        public string GetProgramFilesBackupPath(DirectoryInfo savegameDirectoryInfo, string backupDirectory)
         {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), _relativeAppDataLocation); }
-        }
+            var userDirecotryName = savegameDirectoryInfo.Parent.Name;
+            var savegameBackupDirectory = Path.Combine(backupDirectory, "ProgramFiles", _relativeProgramFilesLocation, userDirecotryName);
 
-        public string ProgramFilesSourceDirectory
-        {
-            get { return Path.Combine(_programFilesDirectory, _relativeProgramFilesLocation); }
+            var backupPath = Path.Combine(savegameBackupDirectory, savegameDirectoryInfo.Name);
+            return backupPath;
         }
     }
 
