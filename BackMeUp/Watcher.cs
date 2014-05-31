@@ -73,6 +73,4 @@ namespace BackMeUp
             return latestFile;
         }
     }
-
-
 }
