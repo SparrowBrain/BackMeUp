@@ -31,6 +31,7 @@ namespace BackMeUp
         {
         }
 
+        // TODO: what happens if there are no saves?
         public string GetLatestSave()
         {
             var saveGamesPath = Path.Combine(_programFilesDirectory, _relativeProgramFilesLocation);

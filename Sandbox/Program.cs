@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using BackMeUp;
@@ -36,7 +37,10 @@ namespace Sandbox
         {
             //Backup();
             //Watcher();
-            BackupWatcher();
+            //BackupWatcher();
+            //FullBackupJob();
+
+            BackupProcess();
         }
 
         private static void Backup()
@@ -81,6 +85,61 @@ namespace Sandbox
             Console.WriteLine(backupWatcher.GetLatestSpoolBackup(_games[1].Name));
 
             Console.ReadKey();
+        }
+
+        private static void FullBackupJob()
+        {
+            Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
+            var watcher = new Watcher(Configuration);
+            var backupWatcher = new BackupWatcher(Configuration);
+
+            var latestSave = watcher.GetLatestSave();
+            var latestSpool = watcher.GetLatestSpool();
+            var saveGameNumber = Path.GetFileName(latestSave);
+            var spoolNumber = Path.GetFileNameWithoutExtension(latestSpool);
+            var game = _games.FirstOrDefault(x => x.GameSaveNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber));
+            if (game == null)
+            {
+                game = new Game
+                {
+                    Name = string.Concat(saveGameNumber, "_Unidentified"),
+                    GameSaveNumber = Convert.ToInt32(saveGameNumber),
+                    SpoolNumber = Convert.ToInt32(spoolNumber)
+                };
+            }
+            Console.WriteLine("{0} Game identified {1}", DateTime.Now, game);
+
+            var latestBackupSave = backupWatcher.GetLatestGameSaveBackup(game.Name);
+
+            bool saveBackedUp;
+            if (string.IsNullOrEmpty(latestBackupSave))
+            {
+                saveBackedUp = false;
+            }
+            else
+            {
+                var comparer = new Comparer();
+                saveBackedUp = comparer.CompareDirectories(latestSave, latestBackupSave);
+            }
+
+            if (!saveBackedUp)
+            {
+                Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
+                var backupCreator = new BackupCreator(Configuration);
+                backupCreator.CreateBackup(new FileInfo(latestSpool), new DirectoryInfo(latestSave), game.Name);
+            }
+            Console.WriteLine("Done");
+            Console.WriteLine();
+        }
+
+        private static void BackupProcess()
+        {
+            var period = new TimeSpan(0, 10, 0);
+            while (true)
+            {
+                FullBackupJob();
+                Thread.Sleep(period);
+            }
         }
     }
 }

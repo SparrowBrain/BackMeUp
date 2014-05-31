@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using BackMeUp.Utils;
 
 namespace BackMeUp
@@ -10,7 +11,7 @@ namespace BackMeUp
             var saveFiles = Directory.GetFiles(saveDir);
             var backupFiles = Directory.GetFiles(backupDir);
 
-            if (saveDir.Length != backupDir.Length)
+            if (saveFiles.Length != backupFiles.Length)
             {
                 return false;
             }
