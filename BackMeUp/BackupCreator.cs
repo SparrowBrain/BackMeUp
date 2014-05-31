@@ -56,6 +56,7 @@ namespace BackMeUp
             CopyDirectory(savegamesDirectoryInfo.FullName, programFilsBackupPath);
         }
 
+        // TODO: add this to backup watcher, to avoid discrepencies
         public string ReplaceInvalidCharacters(string path)
         {
             foreach (var invalidCharacter in Path.GetInvalidPathChars())

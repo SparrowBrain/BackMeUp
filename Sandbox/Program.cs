@@ -29,8 +29,8 @@ namespace Sandbox
 
         private static readonly Game[] _games = 
         {
-            new Game {Name = "Far Cry 3", SpoolNumber = 101, GameSaveNumber = 46},
-            new Game {Name = "Assasin's Creed IV Back Flag", SpoolNumber = 620, GameSaveNumber = 437}
+            new Game {Name = "Far Cry 3", SpoolNumber = 101, SaveGameNumber = 46},
+            new Game {Name = "Assasin's Creed IV Back Flag", SpoolNumber = 620, SaveGameNumber = 437}
         };
 
         static void Main(string[] args)
@@ -62,7 +62,7 @@ namespace Sandbox
             if (game == null) throw new Exception("I give up!");
 
             var spool = Path.Combine(Configuration.AppDataDirectory, RelativeAppDataLocation, MyUserDir, string.Format("{0}.spool", game.SpoolNumber));
-            var saveGame = Path.Combine(Configuration.ProgramFilesDirectory, RelativeProgramFilesLocation, MyUserDir, game.GameSaveNumber.ToString(CultureInfo.InvariantCulture));
+            var saveGame = Path.Combine(Configuration.ProgramFilesDirectory, RelativeProgramFilesLocation, MyUserDir, game.SaveGameNumber.ToString(CultureInfo.InvariantCulture));
 
             return Tuple.Create(spool, saveGame);
         }
@@ -97,15 +97,10 @@ namespace Sandbox
             var latestSpool = watcher.GetLatestSpool();
             var saveGameNumber = Path.GetFileName(latestSave);
             var spoolNumber = Path.GetFileNameWithoutExtension(latestSpool);
-            var game = _games.FirstOrDefault(x => x.GameSaveNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber));
+            var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber));
             if (game == null)
             {
-                game = new Game
-                {
-                    Name = string.Concat(saveGameNumber, "_Unidentified"),
-                    GameSaveNumber = Convert.ToInt32(saveGameNumber),
-                    SpoolNumber = Convert.ToInt32(spoolNumber)
-                };
+                game = new Game(Convert.ToInt32(spoolNumber), Convert.ToInt32(saveGameNumber));
             }
             Console.WriteLine("{0} Game identified {1}", DateTime.Now, game);
 
