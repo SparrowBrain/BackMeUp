@@ -29,8 +29,8 @@ namespace Sandbox
 
         private static readonly Game[] _games = 
         {
-            new Game {Name = "Far Cry 3", SpoolNumber = 101, SaveGameNumber = 46},
-            new Game {Name = "Assasin's Creed IV Back Flag", SpoolNumber = 620, SaveGameNumber = 437}
+            new Game ("Far Cry 3", 101,46),
+            new Game ("Assasin's Creed IV Back Flag", 620, 437)
         };
 
         static void Main(string[] args)

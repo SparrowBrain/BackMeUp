@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BackMeUp.Utils;
 
 namespace BackMeUp
 {
@@ -40,7 +40,7 @@ namespace BackMeUp
                 directoryInfo.Create();
             }
 
-            name = ReplaceInvalidCharacters(name);
+            name = new DirectoryNameFixer().ReplaceInvalidCharacters(name);
             var backupFolderName = string.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd_HHmmss"));
             var backupDirectory = Path.Combine(_backupDirectory, name, backupFolderName);
 
@@ -54,19 +54,6 @@ namespace BackMeUp
 
             File.Copy(spoolFileInfo.FullName, appDataBackupFileInfo.FullName);
             CopyDirectory(savegamesDirectoryInfo.FullName, programFilsBackupPath);
-        }
-
-        // TODO: add this to backup watcher, to avoid discrepencies
-        public string ReplaceInvalidCharacters(string path)
-        {
-            foreach (var invalidCharacter in Path.GetInvalidPathChars())
-            {
-                if (path.Contains(invalidCharacter))
-                {
-                    path = path.Replace(invalidCharacter, '_');
-                }
-            }
-            return path;
         }
 
         public void CopyDirectory(string sourceDirectory, string destinationDirectory)

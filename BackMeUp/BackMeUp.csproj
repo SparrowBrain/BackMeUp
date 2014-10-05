@@ -49,6 +49,7 @@
     <Compile Include="BackupWatcher.cs" />
     <Compile Include="Comparer.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Utils\DirectoryNameFixer.cs" />
     <Compile Include="Utils\Crc16.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Program.cs" />
