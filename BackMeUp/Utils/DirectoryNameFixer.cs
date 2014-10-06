@@ -13,30 +13,12 @@ namespace BackMeUp.Utils
                 return directoryName;
             }
 
-            var invalidChars = new List<char>()
-            {
-                '"',
-                '<',
-                '>',
-                '|',
-                '\b',
-                '\0',
-                '\t',
-                '?',
-                '*',
-                ':',
-                '\\',
-                '/'
-            };
-            invalidChars.AddRange(Path.GetInvalidPathChars());
-
-            foreach (var invalidCharacter in invalidChars)
+            foreach (var invalidCharacter in Path.GetInvalidFileNameChars())
             {
                 if (directoryName.Contains(invalidCharacter))
                 {
                     directoryName = directoryName.Replace(invalidCharacter, '_');
                 }
-                
             }
 
             return directoryName;
