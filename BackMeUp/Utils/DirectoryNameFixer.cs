@@ -6,12 +6,11 @@ namespace BackMeUp.Utils
 {
     public class DirectoryNameFixer
     {
-        public string ReplaceInvalidCharacters(string path)
+        public string ReplaceInvalidCharacters(string directoryName)
         {
-            var root = Path.GetPathRoot(path);
-            if (!string.IsNullOrEmpty(root))
+            if (string.IsNullOrEmpty(directoryName))
             {
-                path = path.Substring(root.Length);
+                return directoryName;
             }
 
             var invalidChars = new List<char>()
@@ -24,25 +23,23 @@ namespace BackMeUp.Utils
                 '\0',
                 '\t',
                 '?',
-                '*'
+                '*',
+                ':',
+                '\\',
+                '/'
             };
-
             invalidChars.AddRange(Path.GetInvalidPathChars());
 
             foreach (var invalidCharacter in invalidChars)
             {
-                if (path.Contains(invalidCharacter))
+                if (directoryName.Contains(invalidCharacter))
                 {
-                    path = path.Replace(invalidCharacter, '_');
+                    directoryName = directoryName.Replace(invalidCharacter, '_');
                 }
                 
             }
 
-            if (!string.IsNullOrEmpty(root))
-            {
-                path = Path.Combine(root, path);
-            }
-            return path;
+            return directoryName;
         }
     }
 }
