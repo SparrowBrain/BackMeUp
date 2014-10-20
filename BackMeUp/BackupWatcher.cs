@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BackMeUp.Utils;
@@ -87,51 +86,6 @@ namespace BackMeUp
             var validDirecotries = backupDirectories.Where(folder => _backupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
 
             validDirecotries.Sort();
-            var latestDirectory = validDirecotries.LastOrDefault();
-            return latestDirectory;
-        }
-    }
-
-    public class BackupCleaner
-    {
-        private readonly string _backupDirectory;
-        private readonly string _appDataDirectory;
-        private readonly string _programFilesDirectory;
-        private readonly string _relativeAppDataLocation;
-        private readonly string _relativeProgramFilesLocation;
-
-        private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
-            RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-        public BackupCleaner(Configuration configuration)
-        {
-            _backupDirectory = configuration.BackupDirectory;
-            _appDataDirectory = configuration.AppDataDirectory;
-            _programFilesDirectory = configuration.ProgramFilesDirectory;
-            _relativeAppDataLocation = configuration.RelativeAppDataLocation;
-            _relativeProgramFilesLocation = configuration.RelativeProgramFilesLocation;
-        }
-
-        //public void CleanUp(string name)
-        //{
-        //    var sa = new DirectoryInfo("as").si
-            
-        //}
-
-        //public bool 
-
-        public string GetLatestBackup(string name)
-        {
-            name = new DirectoryNameFixer().ReplaceInvalidCharacters(name);
-            var gameBackupPath = Path.Combine(_backupDirectory, name);
-            if (!Directory.Exists(gameBackupPath))
-                return null;
-
-            var backupDirectories = Directory.GetDirectories(gameBackupPath);
-
-            var validDirecotries = backupDirectories.Where(folder => _backupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
-
-            validDirecotries.Sort((x, y) => String.Compare(x, y, StringComparison.Ordinal));
             var latestDirectory = validDirecotries.LastOrDefault();
             return latestDirectory;
         }

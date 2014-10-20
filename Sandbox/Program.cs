@@ -70,7 +70,7 @@ namespace Sandbox
 
         private static void Watcher()
         {
-            var watcher = new Watcher(Configuration);
+            var watcher = new SaveWatcher(Configuration);
             Console.WriteLine(watcher.GetLatestSave());
             Console.WriteLine(watcher.GetLatestSpool());
             Console.ReadKey();
@@ -91,7 +91,7 @@ namespace Sandbox
         private static void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
-            var watcher = new Watcher(Configuration);
+            var watcher = new SaveWatcher(Configuration);
             var backupWatcher = new BackupWatcher(Configuration);
 
             var latestSave = watcher.GetLatestSave();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BackMeUp
 {
-    public class Watcher
+    public class SaveWatcher
     {
         private readonly string _backupDirectory;
         private readonly string _appDataDirectory;
@@ -15,7 +15,7 @@ namespace BackMeUp
         private readonly string _relativeAppDataLocation;
         private readonly string _relativeProgramFilesLocation;
         
-        public Watcher(string backupDirectory, string appDataDirectory, string programFilesDirectory, string relativeAppDataLocation, string relativeProgramFilesLocation)
+        public SaveWatcher(string backupDirectory, string appDataDirectory, string programFilesDirectory, string relativeAppDataLocation, string relativeProgramFilesLocation)
         {
             _backupDirectory = backupDirectory;
             _appDataDirectory = appDataDirectory;
@@ -24,7 +24,7 @@ namespace BackMeUp
             _relativeProgramFilesLocation = relativeProgramFilesLocation;
         }
 
-        public Watcher(Configuration configuration)
+        public SaveWatcher(Configuration configuration)
             : this(
                 configuration.BackupDirectory, configuration.AppDataDirectory, configuration.ProgramFilesDirectory,
                 configuration.RelativeAppDataLocation, configuration.RelativeProgramFilesLocation)
