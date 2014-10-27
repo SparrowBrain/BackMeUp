@@ -22,49 +22,57 @@ namespace BackMeUp
         private readonly string _relativeAppDataLocation;
         private readonly string _relativeProgramFilesLocation;
 
+        private IFileSystem _fileSystem;
+        private IDirectoryNameFixer _directoryNameFixer;
+
         public BackupCreator(string backupDirectory, string relativeAppDataLocation, string relativeProgramFilesLocation)
         {
             _backupDirectory = backupDirectory;
             _relativeAppDataLocation = relativeAppDataLocation;
             _relativeProgramFilesLocation = relativeProgramFilesLocation;
+
+            _fileSystem = GetFileSystem();
+            _directoryNameFixer = GetDirectoryNameFixer();
         }
 
         public BackupCreator(Configuration configuration):this(configuration.BackupDirectory, configuration.RelativeAppDataLocation,configuration.RelativeProgramFilesLocation)
         { }
 
+        public virtual IFileSystem GetFileSystem()
+        {
+            return new FileSystem();
+        }
+
+        public virtual IDirectoryNameFixer GetDirectoryNameFixer()
+        {
+            return new DirectoryNameFixer();
+        }
+
         public void CreateBackup(FileInfo spoolFileInfo, DirectoryInfo savegamesDirectoryInfo, string name)
         {
-            var directoryInfo = new DirectoryInfo(_backupDirectory);
-            if (!directoryInfo.Exists)
-            {
-                directoryInfo.Create();
-            }
+            _fileSystem.CreateDirectoryIfNotExists(_backupDirectory);
 
-            name = new DirectoryNameFixer().ReplaceInvalidCharacters(name);
-            var backupFolderName = string.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd_HHmmss"));
+            name = _directoryNameFixer.ReplaceInvalidCharacters(name);
+            var backupFolderName = string.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd_HHmmss"));/////////////DateTime, lol ^-^
             var backupDirectory = Path.Combine(_backupDirectory, name, backupFolderName);
 
             var appDataBackupFileInfo = GetAppDataBackupPath(spoolFileInfo, backupDirectory);
             var programFilsBackupPath = GetProgramFilesBackupPath(savegamesDirectoryInfo, backupDirectory);
 
-            if (!Directory.Exists(appDataBackupFileInfo.DirectoryName))
-            {
-                Directory.CreateDirectory(appDataBackupFileInfo.DirectoryName);
-            }
+            _fileSystem.CreateDirectoryIfNotExists(appDataBackupFileInfo.DirectoryName);
 
-            File.Copy(spoolFileInfo.FullName, appDataBackupFileInfo.FullName);
+            _fileSystem.FileCopy(spoolFileInfo.FullName, appDataBackupFileInfo.FullName);
             CopyDirectory(savegamesDirectoryInfo.FullName, programFilsBackupPath);
         }
 
         public void CopyDirectory(string sourceDirectory, string destinationDirectory)
         {
-            if (!Directory.Exists(destinationDirectory))
-                Directory.CreateDirectory(destinationDirectory);
+            _fileSystem.CreateDirectoryIfNotExists(destinationDirectory);
 
-            foreach (var file in Directory.GetFiles(sourceDirectory))
+            foreach (var file in _fileSystem.DirectoryGetFiles(sourceDirectory))
             {
                 var fileName = Path.GetFileName(file);
-                File.Copy(file, Path.Combine(destinationDirectory, fileName));
+                _fileSystem.FileCopy(file, Path.Combine(destinationDirectory, fileName));
             }
         }
 

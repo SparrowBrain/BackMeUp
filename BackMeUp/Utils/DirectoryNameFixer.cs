@@ -4,7 +4,12 @@ using System.Linq;
 
 namespace BackMeUp.Utils
 {
-    public class DirectoryNameFixer
+    public interface IDirectoryNameFixer
+    {
+        string ReplaceInvalidCharacters(string directoryName);
+    }
+
+    public class DirectoryNameFixer : IDirectoryNameFixer
     {
         public string ReplaceInvalidCharacters(string directoryName)
         {
