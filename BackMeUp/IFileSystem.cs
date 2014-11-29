@@ -14,9 +14,8 @@ namespace BackMeUp
         DirectoryInfo DirectoryCreateDirectory(string path);
         bool DirectoryExists(string path);
         string[] DirectoryGetFiles(string path);
-
         void FileCopy(string sourceFileName, string destFileName);
-
+        void CopyDirectory(string sourceDirectory, string destinationDirectory);
     }
 
     public class FileSystem:IFileSystem
@@ -26,6 +25,17 @@ namespace BackMeUp
             if (!DirectoryExists(path))
             {
                 DirectoryCreateDirectory(path);
+            }
+        }
+        
+        public void CopyDirectory(string sourceDirectory, string destinationDirectory)
+        {
+            CreateDirectoryIfNotExists(destinationDirectory);
+
+            foreach (var file in DirectoryGetFiles(sourceDirectory))
+            {
+                var fileName = Path.GetFileName(file);
+                FileCopy(file, Path.Combine(destinationDirectory, fileName));
             }
         }
 
