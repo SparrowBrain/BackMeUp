@@ -44,19 +44,6 @@ namespace Sandbox
             BackupProcess();
         }
 
-        private static void Backup()
-        {
-            var backupCreator = new BackupCreator(BackupDirectory, RelativeAppDataLocation, RelativeProgramFilesLocation);
-
-            var spoolFileInfo = new FileInfo(GetGamePaths(_games[0].Name).Item1);
-            var savegameDirecotryInfo = new DirectoryInfo(GetGamePaths(_games[0].Name).Item2);
-            backupCreator.CreateBackup(spoolFileInfo, savegameDirecotryInfo, _games[0].Name);
-
-            spoolFileInfo = new FileInfo(GetGamePaths(_games[1].Name).Item1);
-            savegameDirecotryInfo = new DirectoryInfo(GetGamePaths(_games[1].Name).Item2);
-            backupCreator.CreateBackup(spoolFileInfo, savegameDirecotryInfo, _games[1].Name);
-        }
-
         private static Tuple<string, string> GetGamePaths(string name)
         {
             var game = _games.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));

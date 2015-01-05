@@ -54,24 +54,24 @@ namespace BackMeUp
             return latestSave;
         }
 
-        public string GetLatestSpool()
-        {
-            var spoolPath = Path.Combine(_appDataDirectory, _relativeAppDataLocation);
-            var spoolFiles = Directory.GetFiles(spoolPath, "*.spool", SearchOption.AllDirectories);
+        //public string GetLatestSpool()
+        //{
+        //    var spoolPath = Path.Combine(_appDataDirectory, _relativeAppDataLocation);
+        //    var spoolFiles = Directory.GetFiles(spoolPath, "*.spool", SearchOption.AllDirectories);
 
-            var lastWriteTime = DateTime.MinValue;
-            string latestFile = null;
-            foreach (var spoolFile in spoolFiles)
-            {
-                var fileInfo = new FileInfo(spoolFile);
-                if (fileInfo.LastWriteTime > lastWriteTime)
-                {
-                    lastWriteTime = fileInfo.LastWriteTime;
-                    latestFile = spoolFile;
-                }
-            }
+        //    var lastWriteTime = DateTime.MinValue;
+        //    string latestFile = null;
+        //    foreach (var spoolFile in spoolFiles)
+        //    {
+        //        var fileInfo = new FileInfo(spoolFile);
+        //        if (fileInfo.LastWriteTime > lastWriteTime)
+        //        {
+        //            lastWriteTime = fileInfo.LastWriteTime;
+        //            latestFile = spoolFile;
+        //        }
+        //    }
 
-            return latestFile;
-        }
+        //    return latestFile;
+        //}
     }
 }

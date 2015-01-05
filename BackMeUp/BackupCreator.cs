@@ -21,8 +21,6 @@ namespace BackMeUp
     public class BackupCreator
     {
         private readonly string _backupDirectory;
-        private readonly string _relativeAppDataLocation;
-        private readonly string _relativeProgramFilesLocation;
         private IFileSystem _fileSystem;
         
         protected IFileSystem FileSystem
@@ -31,15 +29,13 @@ namespace BackMeUp
             set { _fileSystem = value; }
         }
 
-        public BackupCreator(string backupDirectory, string relativeAppDataLocation, string relativeProgramFilesLocation, IList<IBackupDirectoryResolver> direcotryResolvers)
+        public BackupCreator(string backupDirectory)
         {
             _backupDirectory = backupDirectory;
-            _relativeAppDataLocation = relativeAppDataLocation;
-            _relativeProgramFilesLocation = relativeProgramFilesLocation;
         }
 
         public BackupCreator(Configuration configuration)
-            : this(configuration.BackupDirectory, configuration.RelativeAppDataLocation, configuration.RelativeProgramFilesLocation)
+            : this(configuration.BackupDirectory)
         { }
 
         protected virtual IFileSystem GetFileSystem()
@@ -47,54 +43,28 @@ namespace BackMeUp
             return new FileSystem();
         }
 
-        public void CreateBackup(IList<IBackupDirectoryResolver> _backupDirectoryResolvers, string name)
+        public void CreateBackup(IDictionary<string, IBackupDirectoryResolver> resolverDictionary, string name)
         {
             FileSystem.CreateDirectoryIfNotExists(_backupDirectory);
+            var newTimedBackupPath = resolverDictionary.First().Value.GetNewTimedBackupPath(name);
 
-            var backupDirectory = _backupDirectoryResolvers.First().GetNewBackupName(name);
-
-            foreach (var resolver in _backupDirectoryResolvers)
+            foreach (var keyValuePair in resolverDictionary)
             {
-                var backupPath = resolver.GetBackupPath(backupDirectory);
-                //FileSystem.CreateDirectoryIfNotExists(appDataBackupFileInfo.DirectoryName);
-                FileSystem.FileCopy(spoolFileInfo.FullName, backupPath);
+                var originalPath = keyValuePair.Key;
+                var resolver = keyValuePair.Value;
+                var backupPath = resolver.GetBackupPath(originalPath, newTimedBackupPath);
+
+                resolver.Copy(originalPath, backupPath);
             }
-
-            var appDataBackupFileInfo = GetAppDataBackupPath(spoolFileInfo, backupDirectory);
-            var programFilsBackupPath = GetProgramFilesBackupPath(savegamesDirectoryInfo, backupDirectory);
-
-            FileSystem.CreateDirectoryIfNotExists(appDataBackupFileInfo.DirectoryName);
-
-            FileSystem.FileCopy(spoolFileInfo.FullName, appDataBackupFileInfo.FullName);
-            FileSystem.CopyDirectory(savegamesDirectoryInfo.FullName, programFilsBackupPath);
-        }
-
-
-
-        public FileInfo GetAppDataBackupPath(FileInfo spoolFileInfo, string backupDirectory)
-        {
-            var userDirecotryName = spoolFileInfo.Directory.Name;
-            var spoolBackupDirectory = Path.Combine(backupDirectory, "AppData", _relativeAppDataLocation, userDirecotryName);
-
-            var backupPath = Path.Combine(spoolBackupDirectory, spoolFileInfo.Name);
-            return new FileInfo(backupPath);
-        }
-
-        public string GetProgramFilesBackupPath(DirectoryInfo savegameDirectoryInfo, string backupDirectory)
-        {
-            var userDirecotryName = savegameDirectoryInfo.Parent.Name;
-            var savegameBackupDirectory = Path.Combine(backupDirectory, "ProgramFiles", _relativeProgramFilesLocation, userDirecotryName);
-
-            var backupPath = Path.Combine(savegameBackupDirectory, savegameDirectoryInfo.Name);
-            return backupPath;
         }
     }
 
     public interface IBackupDirectoryResolver
     {
-        string GetBackupPath(string pathToBackup, string backupDirectory);
+        string GetBackupPath(string originalPath, string backupDirectory);
         string GetLatest(string name);
-        string GetNewBackupName(string name);
+        string GetNewTimedBackupPath(string name);
+        void Copy(string source, string destination);
     }
 
     public abstract class BackupDirectoryResolver : IBackupDirectoryResolver
@@ -104,7 +74,7 @@ namespace BackMeUp
 
         private string _relativeLocation;
         private string _backupDirectory;
-        protected virtual string BackupFolder { get{return null;}  }
+        protected abstract string BackupFolder { get; }
 
         public BackupDirectoryResolver(string relativeLocation, string backupDirectory)
         {
@@ -122,12 +92,17 @@ namespace BackMeUp
             return new DateTimeWrapper();
         }
 
-        public string GetBackupPath(string pathToBackup, string backupDirectory)
+        protected virtual IFileSystem GetFileSystem()
         {
-            var userDirecotryName = Directory.GetParent(pathToBackup).Name;
+            return new FileSystem();
+        }
+
+        public string GetBackupPath(string originalPath, string backupDirectory)
+        {
+            var userDirecotryName = Directory.GetParent(originalPath).Name;
             backupDirectory = Path.Combine(backupDirectory, BackupFolder, _relativeLocation, userDirecotryName);
 
-            var backupPath = Path.Combine(backupDirectory, pathToBackup);
+            var backupPath = Path.Combine(backupDirectory, originalPath);
             return backupPath;
         }
 
@@ -172,13 +147,15 @@ namespace BackMeUp
             return latestDirectory;
         }
 
-        public string GetNewBackupName(string name)
+        public string GetNewTimedBackupPath(string name)
         {
             name = GetDirectoryNameFixer().ReplaceInvalidCharacters(name);
             var now = GetDateTimeWrapper().Now();
-            var backupFolderName = string.Format("{0}", now.ToString("yyyy-MM-dd_HHmmss"));
-            return Path.Combine(_backupDirectory, name, backupFolderName);
+            var timedFolderName = string.Format("{0}", now.ToString("yyyy-MM-dd_HHmmss"));
+            return Path.Combine(_backupDirectory, name, timedFolderName);
         }
+
+        public abstract void Copy(string source, string destination);
     }
 
     public class AppDataDirectoryResolver : BackupDirectoryResolver
@@ -193,6 +170,14 @@ namespace BackMeUp
             {
                 return "AppData";
             }
+        }
+
+        public override void Copy(string source, string destination)
+        {
+            var fileSystem = GetFileSystem();
+            fileSystem.CreateDirectoryIfNotExists(Path.GetDirectoryName(source));
+
+            fileSystem.FileCopy(source, destination);
         }
     }
 
@@ -209,6 +194,12 @@ namespace BackMeUp
             {
                 return "ProgramFiles";
             }
+        }
+
+        public override void Copy(string source, string destination)
+        {
+            var fileSystem = GetFileSystem();
+            fileSystem.CopyDirectory(source, destination);
         }
     }
 
