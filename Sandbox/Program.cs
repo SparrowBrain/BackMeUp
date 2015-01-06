@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using BackMeUp;
 using BackMeUp.Utils;
 
@@ -51,9 +50,7 @@ namespace Sandbox
             var backupWatcher = new BackupWatcher(Configuration);
 
             var latestSave = watcher.GetLatestSave();
-            //var latestSpool = watcher.GetLatestSpool();
             var saveGameNumber = Path.GetFileName(latestSave);
-            //var spoolNumber = Path.GetFileNameWithoutExtension(latestSpool);
             var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));
 

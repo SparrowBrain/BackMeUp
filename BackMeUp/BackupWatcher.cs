@@ -8,37 +8,44 @@ namespace BackMeUp
     public class BackupWatcher
     {
         private readonly string _backupDirectory;
-        private readonly string _appDataDirectory;
         private readonly string _programFilesDirectory;
-        private readonly string _relativeAppDataLocation;
-        private readonly string _relativeProgramFilesLocation;
-
+        private readonly string _relativeProgramFilesDirectory;
+        private IBackupDirectoryResolver _backupDirectoryResolver;
         
-
         public BackupWatcher(Configuration configuration)
         {
             _backupDirectory = configuration.BackupDirectory;
-            _appDataDirectory = configuration.AppDataDirectory;
             _programFilesDirectory = configuration.ProgramFilesDirectory;
-            _relativeAppDataLocation = configuration.RelativeAppDataLocation;
-            _relativeProgramFilesLocation = configuration.RelativeProgramFilesLocation;
+            _relativeProgramFilesDirectory = configuration.RelativeProgramFilesLocation;
+        }
+        
+        protected IBackupDirectoryResolver BackupDirectoryResolver
+        {
+            get { return _backupDirectoryResolver ?? (_backupDirectoryResolver = GetBackupDirectoryResolver()); }
+            set { _backupDirectoryResolver = value; }
+        }
+
+        protected virtual IBackupDirectoryResolver GetBackupDirectoryResolver()
+        {
+            return new ProgramFilesDirectoryResolver(_relativeProgramFilesDirectory, _backupDirectory);
         }
 
         public string GetLatestGameSaveBackup(string name)
         {
-            var gameBackupPath = GetLatestBackup(name);
+            var gameBackupPath = BackupDirectoryResolver.GetLatest(name);
             if (string.IsNullOrEmpty(gameBackupPath))
             {
                 return null;
             }
-
-            var saveGameDirecotry = Path.Combine(gameBackupPath, "ProgramFiles", _relativeProgramFilesLocation);
-            if (!Directory.Exists(saveGameDirecotry))
+            
+            var saveGameDirectory = Path.Combine(gameBackupPath, "ProgramFiles", _relativeProgramFilesDirectory);
+            if (!Directory.Exists(saveGameDirectory))
             {
                 return null;
             }
 
-            var userDirecotry = Directory.GetDirectories(saveGameDirecotry).FirstOrDefault();
+            // TODO This looks bad. What about multiuser environment?
+            var userDirecotry = Directory.GetDirectories(saveGameDirectory).FirstOrDefault();
             if (string.IsNullOrEmpty(userDirecotry))
             {
                 return null;
@@ -48,30 +55,5 @@ namespace BackMeUp
 
             return latestSaveGame;
         }
-
-        public string GetLatestSpoolBackup(string name)
-        {
-            var gameBackupPath = GetLatestBackup(name);
-            if (string.IsNullOrEmpty(gameBackupPath))
-            {
-                return null;
-            }
-
-            var spoolDirectory = Path.Combine(gameBackupPath, "AppData", _relativeAppDataLocation);
-            if (!Directory.Exists(spoolDirectory))
-            {
-                return null;
-            }
-
-            var userDirecotry = Directory.GetDirectories(spoolDirectory).FirstOrDefault();
-            if (string.IsNullOrEmpty(userDirecotry))
-            {
-                return null;
-            }
-
-            var latestSpool = Directory.GetFiles(userDirecotry, "*.spool").FirstOrDefault();
-            return latestSpool;
-        }
-
     }
 }

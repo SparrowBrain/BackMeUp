@@ -9,9 +9,7 @@ namespace BackMeUp
     public class BackupCleaner
     {
         private readonly string _backupDirectory;
-        private readonly string _appDataDirectory;
         private readonly string _programFilesDirectory;
-        private readonly string _relativeAppDataLocation;
         private readonly string _relativeProgramFilesLocation;
 
         private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
@@ -20,9 +18,7 @@ namespace BackMeUp
         public BackupCleaner(Configuration configuration)
         {
             _backupDirectory = configuration.BackupDirectory;
-            _appDataDirectory = configuration.AppDataDirectory;
             _programFilesDirectory = configuration.ProgramFilesDirectory;
-            _relativeAppDataLocation = configuration.RelativeAppDataLocation;
             _relativeProgramFilesLocation = configuration.RelativeProgramFilesLocation;
         }
 

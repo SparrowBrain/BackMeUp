@@ -19,7 +19,5 @@
         {
             return string.Format("Name: \"{0}\", GameSave: {1}", Name, SaveGameNumber);
         }
-
-        public string GameSavePath { get; set; }
     }
 }
