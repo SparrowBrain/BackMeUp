@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BackMeUp.Utils;
 
 namespace BackMeUp
 {
@@ -21,21 +17,30 @@ namespace BackMeUp
     public class BackupCreator
     {
         private readonly string _backupDirectory;
+        private readonly string _relativeProgramFilesDirectory;
         private IFileSystem _fileSystem;
-        
+        private IBackupDirectoryResolver _backupDirectoryResolver;
+
         protected IFileSystem FileSystem
         {
             get { return _fileSystem ?? (_fileSystem = GetFileSystem()); }
             set { _fileSystem = value; }
         }
 
-        public BackupCreator(string backupDirectory)
+        protected IBackupDirectoryResolver BackupDirectoryResolver
+        {
+            get { return _backupDirectoryResolver ?? (_backupDirectoryResolver = GetBackupDirectoryResolver()); }
+            set { _backupDirectoryResolver = value; }
+        }
+
+        public BackupCreator(string backupDirectory, string relativeProgramFilesDirectory)
         {
             _backupDirectory = backupDirectory;
+            _relativeProgramFilesDirectory = relativeProgramFilesDirectory;
         }
 
         public BackupCreator(Configuration configuration)
-            : this(configuration.BackupDirectory)
+            : this(configuration.BackupDirectory, configuration.RelativeProgramFilesLocation)
         { }
 
         protected virtual IFileSystem GetFileSystem()
@@ -43,176 +48,20 @@ namespace BackMeUp
             return new FileSystem();
         }
 
-        public void CreateBackup(IDictionary<string, IBackupDirectoryResolver> resolverDictionary, string name)
+        protected virtual IBackupDirectoryResolver GetBackupDirectoryResolver()
+        {
+            return new ProgramFilesDirectoryResolver(_relativeProgramFilesDirectory, _backupDirectory);
+        }
+
+        public void CreateBackup(string savegame, string name)
         {
             FileSystem.CreateDirectoryIfNotExists(_backupDirectory);
-            var newTimedBackupPath = resolverDictionary.First().Value.GetNewTimedBackupPath(name);
 
-            foreach (var keyValuePair in resolverDictionary)
-            {
-                var originalPath = keyValuePair.Key;
-                var resolver = keyValuePair.Value;
-                var backupPath = resolver.GetBackupPath(originalPath, newTimedBackupPath);
+            var newTimedBackupPath = BackupDirectoryResolver.GetNewTimedBackupPath(name);
+            var backupPath = BackupDirectoryResolver.GetBackupPath(savegame, newTimedBackupPath);
 
-                resolver.Copy(originalPath, backupPath);
-            }
+            FileSystem.CopyDirectory(savegame, backupPath);
         }
     }
 
-    public interface IBackupDirectoryResolver
-    {
-        string GetBackupPath(string originalPath, string backupDirectory);
-        string GetLatest(string name);
-        string GetNewTimedBackupPath(string name);
-        void Copy(string source, string destination);
-    }
-
-    public abstract class BackupDirectoryResolver : IBackupDirectoryResolver
-    {
-        private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
-            RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-        private string _relativeLocation;
-        private string _backupDirectory;
-        protected abstract string BackupFolder { get; }
-
-        public BackupDirectoryResolver(string relativeLocation, string backupDirectory)
-        {
-            _relativeLocation = relativeLocation;
-            _backupDirectory = backupDirectory;
-        }
-
-        protected virtual IDirectoryNameFixer GetDirectoryNameFixer()
-        {
-            return new DirectoryNameFixer();
-        }
-
-        protected virtual IDateTime GetDateTimeWrapper()
-        {
-            return new DateTimeWrapper();
-        }
-
-        protected virtual IFileSystem GetFileSystem()
-        {
-            return new FileSystem();
-        }
-
-        public string GetBackupPath(string originalPath, string backupDirectory)
-        {
-            var userDirecotryName = Directory.GetParent(originalPath).Name;
-            backupDirectory = Path.Combine(backupDirectory, BackupFolder, _relativeLocation, userDirecotryName);
-
-            var backupPath = Path.Combine(backupDirectory, originalPath);
-            return backupPath;
-        }
-
-        public string GetLatest(string name)
-        {
-            var latestBackup = GetLatestBackup(name);
-            if (string.IsNullOrEmpty(latestBackup))
-            {
-                return null;
-            }
-
-            var relativeBackupPath = Path.Combine(latestBackup, BackupFolder, _relativeLocation);
-            if (!Directory.Exists(relativeBackupPath))
-            {
-                return null;
-            }
-
-            var userDirecotry = Directory.GetDirectories(relativeBackupPath).FirstOrDefault();
-            if (string.IsNullOrEmpty(userDirecotry))
-            {
-                return null;
-            }
-
-            var latest = Directory.GetFileSystemEntries(userDirecotry).FirstOrDefault();
-
-            return latest;
-        }
-        
-        public string GetLatestBackup(string name)
-        {
-            name = GetDirectoryNameFixer().ReplaceInvalidCharacters(name);
-            var gameBackupPath = Path.Combine(_backupDirectory, name);
-            if (!Directory.Exists(gameBackupPath))
-                return null;
-
-            var backupDirectories = Directory.GetDirectories(gameBackupPath);
-
-            var validDirecotries = backupDirectories.Where(folder => _backupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
-
-            validDirecotries.Sort();
-            var latestDirectory = validDirecotries.LastOrDefault();
-            return latestDirectory;
-        }
-
-        public string GetNewTimedBackupPath(string name)
-        {
-            name = GetDirectoryNameFixer().ReplaceInvalidCharacters(name);
-            var now = GetDateTimeWrapper().Now();
-            var timedFolderName = string.Format("{0}", now.ToString("yyyy-MM-dd_HHmmss"));
-            return Path.Combine(_backupDirectory, name, timedFolderName);
-        }
-
-        public abstract void Copy(string source, string destination);
-    }
-
-    public class AppDataDirectoryResolver : BackupDirectoryResolver
-    {
-        public AppDataDirectoryResolver(string relativeLocation,  string backupDirectory) : base(relativeLocation, backupDirectory)
-        {
-        }
-
-        protected override string BackupFolder
-        {
-            get
-            {
-                return "AppData";
-            }
-        }
-
-        public override void Copy(string source, string destination)
-        {
-            var fileSystem = GetFileSystem();
-            fileSystem.CreateDirectoryIfNotExists(Path.GetDirectoryName(source));
-
-            fileSystem.FileCopy(source, destination);
-        }
-    }
-
-    public class ProgramFilesDirectoryResolver : BackupDirectoryResolver
-    {
-        public ProgramFilesDirectoryResolver(string relativeLocation, string backupDirectory)
-            : base(relativeLocation, backupDirectory)
-        {
-        }
-
-        protected override string BackupFolder
-        {
-            get
-            {
-                return "ProgramFiles";
-            }
-        }
-
-        public override void Copy(string source, string destination)
-        {
-            var fileSystem = GetFileSystem();
-            fileSystem.CopyDirectory(source, destination);
-        }
-    }
-
-    public interface IDateTime
-    {
-        DateTime Now();
-    }
-
-    public class DateTimeWrapper:IDateTime
-    {
-        public DateTime Now()
-        {
-            return DateTime.Now;
-        }
-    }
 }

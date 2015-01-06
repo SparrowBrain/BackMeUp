@@ -22,16 +22,16 @@ namespace Sandbox
         private static readonly Configuration Configuration = new Configuration
         {
             BackupDirectory = "Backup",
-            AppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            //AppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             ProgramFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-            RelativeAppDataLocation = @"Ubisoft Game Launcher\spool",
+            //RelativeAppDataLocation = @"Ubisoft Game Launcher\spool",
             RelativeProgramFilesLocation = @"Ubisoft\Ubisoft Game Launcher\savegames",
         };
 
         private static readonly Game[] _games = 
         {
-            new Game ("Far Cry 3", 101,46),
-            new Game ("Assasin's Creed IV Back Flag", 620, 437)
+            new Game ("Far Cry 3", 46),
+            new Game ("Assasin's Creed IV Back Flag", 437)
         };
 
         static void Main(string[] args)
@@ -44,37 +44,6 @@ namespace Sandbox
             BackupProcess();
         }
 
-        private static Tuple<string, string> GetGamePaths(string name)
-        {
-            var game = _games.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (game == null) throw new Exception("I give up!");
-
-            var spool = Path.Combine(Configuration.AppDataDirectory, RelativeAppDataLocation, MyUserDir, string.Format("{0}.spool", game.SpoolNumber));
-            var saveGame = Path.Combine(Configuration.ProgramFilesDirectory, RelativeProgramFilesLocation, MyUserDir, game.SaveGameNumber.ToString(CultureInfo.InvariantCulture));
-
-            return Tuple.Create(spool, saveGame);
-        }
-
-        private static void Watcher()
-        {
-            var watcher = new SaveWatcher(Configuration);
-            Console.WriteLine(watcher.GetLatestSave());
-            Console.WriteLine(watcher.GetLatestSpool());
-            Console.ReadKey();
-        }
-
-        private static void BackupWatcher()
-        {
-            var backupWatcher = new BackupWatcher(Configuration);
-            Console.WriteLine(backupWatcher.GetLatestGameSaveBackup("Far Cry 3"));
-            Console.WriteLine(backupWatcher.GetLatestSpoolBackup("Far Cry 3"));
-
-            Console.WriteLine(backupWatcher.GetLatestGameSaveBackup(_games[1].Name));
-            Console.WriteLine(backupWatcher.GetLatestSpoolBackup(_games[1].Name));
-
-            Console.ReadKey();
-        }
-
         private static void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
@@ -82,14 +51,12 @@ namespace Sandbox
             var backupWatcher = new BackupWatcher(Configuration);
 
             var latestSave = watcher.GetLatestSave();
-            var latestSpool = watcher.GetLatestSpool();
+            //var latestSpool = watcher.GetLatestSpool();
             var saveGameNumber = Path.GetFileName(latestSave);
-            var spoolNumber = Path.GetFileNameWithoutExtension(latestSpool);
-            var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber));
-            if (game == null)
-            {
-                game = new Game(Convert.ToInt32(spoolNumber), Convert.ToInt32(saveGameNumber));
-            }
+            //var spoolNumber = Path.GetFileNameWithoutExtension(latestSpool);
+            var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
+                       new Game(Convert.ToInt32(saveGameNumber));
+
             Console.WriteLine("{0} Game identified {1}", DateTime.Now, game);
 
             var latestBackupSave = backupWatcher.GetLatestGameSaveBackup(game.Name);
@@ -109,7 +76,7 @@ namespace Sandbox
             {
                 Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
                 var backupCreator = new BackupCreator(Configuration);
-                backupCreator.CreateBackup(new FileInfo(latestSpool), new DirectoryInfo(latestSave), game.Name);
+                backupCreator.CreateBackup(latestSave, game.Name);
             }
             Console.WriteLine("Done");
             Console.WriteLine();

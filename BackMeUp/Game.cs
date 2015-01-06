@@ -2,24 +2,24 @@
 {
     public class Game
     {
-        public Game(string name, int spool, int saveGame)
+        public Game(string name, int saveGame)
         {
             Name = name;
-            SpoolNumber = spool;
             SaveGameNumber = saveGame;
         }
 
-        public Game(int spool, int saveGame) : this(string.Concat(saveGame, "_Unidentified"), spool, saveGame)
+        public Game(int saveGame) : this(string.Concat(saveGame, "_Unidentified"), saveGame)
         {
         }
 
         public string Name { get; set; }
-        public int SpoolNumber { get; set; }
         public int SaveGameNumber { get; set; }
 
         public override string ToString()
         {
-            return string.Format("Name: \"{0}\", Spool: {1}, GameSave: {2}", Name, SpoolNumber, SaveGameNumber);
+            return string.Format("Name: \"{0}\", GameSave: {1}", Name, SaveGameNumber);
         }
+
+        public string GameSavePath { get; set; }
     }
 }
