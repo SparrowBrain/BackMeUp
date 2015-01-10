@@ -10,6 +10,7 @@ using BackMeUp;
 using BackMeUp.Data;
 using BackMeUp.Services;
 using BackMeUp.Utils;
+using BackMeUp.Wrappers;
 
 namespace Sandbox
 {
@@ -32,6 +33,10 @@ namespace Sandbox
             new Game ("Assasin's Creed IV Back Flag", 437)
         };
 
+        private static readonly IFileSystem FileSystem = new FileSystem();
+        private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, FileSystem, new DirectoryNameFixer(),new DateTimeWrapper());
+        
+
         static void Main(string[] args)
         {
             //Backup();
@@ -45,8 +50,8 @@ namespace Sandbox
         private static void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
-            var saveWatcher = new SaveWatcher(Configuration);
-            var backupWatcher = new BackupWatcher(Configuration);
+            var saveWatcher = new SaveWatcher(Configuration, FileSystem);
+            var backupWatcher = new BackupWatcher(BackupDirectoryResolver);
 
             var latestSave = saveWatcher.GetLatestSaveFilesDirecotry();
             if (string.IsNullOrEmpty(latestSave))
@@ -59,7 +64,7 @@ namespace Sandbox
             var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));
 
-            Console.WriteLine("{0} Game identified {1}", DateTime.Now, game);
+            Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
 
             var latestBackupSave = backupWatcher.GetLatestGameSaveBackup(game.Name);
 
@@ -77,7 +82,7 @@ namespace Sandbox
             if (!saveBackedUp)
             {
                 Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
-                var backupCreator = new BackupCreator(Configuration);
+                var backupCreator = new BackupCreator(Configuration, BackupDirectoryResolver, FileSystem);
                 backupCreator.CreateBackup(latestSave, game.Name);
             }
             Console.WriteLine("Done");

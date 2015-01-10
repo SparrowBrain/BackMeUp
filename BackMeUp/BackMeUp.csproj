@@ -50,7 +50,7 @@
     <Compile Include="Services\BackupWatcher.cs" />
     <Compile Include="Utils\Comparer.cs" />
     <Compile Include="Data\Configuration.cs" />
-    <Compile Include="Constants.cs" />
+    <Compile Include="Data\Constants.cs" />
     <Compile Include="Wrappers\DateTimeWrapper.cs" />
     <Compile Include="Wrappers\FileSystem.cs" />
     <Compile Include="Wrappers\IDateTime.cs" />

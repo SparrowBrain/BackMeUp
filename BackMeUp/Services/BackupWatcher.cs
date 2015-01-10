@@ -1,31 +1,17 @@
-﻿using BackMeUp.Data;
-
-namespace BackMeUp.Services
+﻿namespace BackMeUp.Services
 {
     public class BackupWatcher
     {
-        private readonly string _backupDirectory;
-        private IBackupDirectoryResolver _backupDirectoryResolver;
+        private readonly IBackupDirectoryResolver _backupDirectoryResolver;
         
-        public BackupWatcher(Configuration configuration)
+        public BackupWatcher(IBackupDirectoryResolver backupDirectoryResolver)
         {
-            _backupDirectory = configuration.BackupDirectory;
-        }
-        
-        protected IBackupDirectoryResolver BackupDirectoryResolver
-        {
-            get { return _backupDirectoryResolver ?? (_backupDirectoryResolver = GetBackupDirectoryResolver()); }
-            set { _backupDirectoryResolver = value; }
-        }
-
-        protected virtual IBackupDirectoryResolver GetBackupDirectoryResolver()
-        {
-            return new BackupDirectoryResolver(_backupDirectory);
+            _backupDirectoryResolver = backupDirectoryResolver;
         }
 
         public string GetLatestGameSaveBackup(string gameName)
         {
-            var latestSaveGameBackup = BackupDirectoryResolver.GetLatestSaveGameBackup(gameName);
+            var latestSaveGameBackup = _backupDirectoryResolver.GetLatestSaveGameBackup(gameName);
             return latestSaveGameBackup;
         }
     }

@@ -2,25 +2,26 @@
 using System.IO;
 using System.Linq;
 using BackMeUp.Data;
+using BackMeUp.Wrappers;
 
 namespace BackMeUp.Services
 {
     public class SaveWatcher
     {
         private readonly string _saveGameDirectory;
+        private readonly IFileSystem _fileSystem;
         
-        public SaveWatcher(string saveGameDirectory)
-        {
-            _saveGameDirectory = saveGameDirectory;
-        }
+        
 
-        public SaveWatcher(Configuration configuration): this(configuration.SaveGameDirectory)
+        public SaveWatcher(Configuration configuration, IFileSystem fileSystem)
         {
+            _saveGameDirectory = configuration.SaveGameDirectory;
+            _fileSystem = fileSystem;
         }
 
         public string GetLatestSaveFilesDirecotry()
         {
-            var directories = Directory.GetDirectories(_saveGameDirectory, "*", SearchOption.AllDirectories);
+            var directories = _fileSystem.DirectoryGetDirectories(_saveGameDirectory, "*", SearchOption.AllDirectories);
             if (directories.Length == 0)
             {
                 return null;

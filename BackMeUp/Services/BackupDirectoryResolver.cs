@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using BackMeUp.Data;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 
@@ -15,24 +16,19 @@ namespace BackMeUp.Services
 
     public class BackupDirectoryResolver : IBackupDirectoryResolver
     {
-        private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
-            RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private readonly string _backupDirectory;
+        private readonly IFileSystem _fileSystem;
+        private readonly IDirectoryNameFixer _directoryNameFixer;
+        private readonly IDateTime _dateTimeWrapper;
 
-        public BackupDirectoryResolver(string backupDirectory)
+        public BackupDirectoryResolver(string backupDirectory, IFileSystem fileSystem, IDirectoryNameFixer directoryNameFixer, IDateTime dateTimeWrapper)
         {
             _backupDirectory = backupDirectory;
-        }
-
-        protected virtual IDirectoryNameFixer GetDirectoryNameFixer()
-        {
-            return new DirectoryNameFixer();
-        }
-
-        protected virtual IDateTime GetDateTimeWrapper()
-        {
-            return new DateTimeWrapper();
+            _fileSystem = fileSystem;
+            _directoryNameFixer = directoryNameFixer;
+            _dateTimeWrapper = dateTimeWrapper;
         }
 
         public string GetFullNewBackupDirectory(string saveGameDirecotry, string timedGameDirectory)
@@ -53,30 +49,30 @@ namespace BackMeUp.Services
             }
 
             var saveGameDirectory = Path.Combine(latestBackup, Constants.SaveGames);
-            if (!Directory.Exists(saveGameDirectory))
+            if (!_fileSystem.DirectoryExists(saveGameDirectory))
             {
                 return null;
             }
 
-            var userDirecotry = Directory.GetDirectories(saveGameDirectory).FirstOrDefault();
+            var userDirecotry = _fileSystem.DirectoryGetDirectories(saveGameDirectory).FirstOrDefault();
             if (string.IsNullOrEmpty(userDirecotry))
             {
                 return null;
             }
 
-            var latestSaveGame = Directory.GetFileSystemEntries(userDirecotry).FirstOrDefault();
+            var latestSaveGame = _fileSystem.DirectoryGetFileSystemEntries(userDirecotry).FirstOrDefault();
 
             return latestSaveGame;
         }
         
         public string GetLatestBackup(string gameName)
         {
-            gameName = GetDirectoryNameFixer().ReplaceInvalidCharacters(gameName);
+            gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
             var gameBackupPath = Path.Combine(_backupDirectory, gameName);
-            if (!Directory.Exists(gameBackupPath))
+            if (!_fileSystem.DirectoryExists(gameBackupPath))
                 return null;
 
-            var backupDirectories = Directory.GetDirectories(gameBackupPath);
+            var backupDirectories = _fileSystem.DirectoryGetDirectories(gameBackupPath);
 
             var validDirecotries = backupDirectories.Where(folder => _backupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
 
@@ -87,8 +83,8 @@ namespace BackMeUp.Services
 
         public string GetTimedGameBackupDirectory(string gameName)
         {
-            gameName = GetDirectoryNameFixer().ReplaceInvalidCharacters(gameName);
-            var now = GetDateTimeWrapper().Now();
+            gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
+            var now = _dateTimeWrapper.Now();
             var timedFolderName = string.Format("{0}", now.ToString("yyyy-MM-dd_HHmmss"));
             return Path.Combine(_backupDirectory, gameName, timedFolderName);
         }

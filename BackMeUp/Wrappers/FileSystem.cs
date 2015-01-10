@@ -40,6 +40,21 @@ namespace BackMeUp.Wrappers
             return Directory.GetFiles(path);
         }
 
+        public string[] DirectoryGetDirectories(string path)
+        {
+            return Directory.GetDirectories(path);
+        }
+
+        public string[] DirectoryGetDirectories(string path, string searchPattern, SearchOption searchOption)
+        {
+            return Directory.GetDirectories(path, searchPattern, searchOption);
+        }
+
+        public string[] DirectoryGetFileSystemEntries(string path)
+        {
+            return Directory.GetFileSystemEntries(path);
+        }
+
         #endregion Directory
 
         #region File

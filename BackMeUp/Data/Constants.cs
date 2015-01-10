@@ -1,4 +1,4 @@
-﻿namespace BackMeUp
+﻿namespace BackMeUp.Data
 {
     public class Constants
     {
