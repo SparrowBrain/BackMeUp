@@ -7,23 +7,20 @@ namespace BackMeUp
 {
     public interface IBackupDirectoryResolver
     {
-        string GetBackupPath(string originalPath, string backupDirectory);
-        string GetLatest(string name);
-        string GetNewTimedBackupPath(string name);
+        string GetFullNewBackupDirectory(string saveGameDirecotry, string timedGameDirectory);
+        string GetLatestSaveGameBackup(string gameName);
+        string GetTimedGameBackupDirectory(string gameName);
     }
 
-    public abstract class BackupDirectoryResolver : IBackupDirectoryResolver
+    public class BackupDirectoryResolver : IBackupDirectoryResolver
     {
         private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private readonly string _relativeLocation;
         private readonly string _backupDirectory;
-        protected abstract string BackupFolder { get; }
 
-        protected BackupDirectoryResolver(string relativeLocation, string backupDirectory)
+        public BackupDirectoryResolver(string backupDirectory)
         {
-            _relativeLocation = relativeLocation;
             _backupDirectory = backupDirectory;
         }
 
@@ -37,44 +34,44 @@ namespace BackMeUp
             return new DateTimeWrapper();
         }
 
-        public string GetBackupPath(string originalPath, string backupDirectory)
+        public string GetFullNewBackupDirectory(string saveGameDirecotry, string timedGameDirectory)
         {
-            var userDirecotryName = Directory.GetParent(originalPath).Name;
-            backupDirectory = Path.Combine(backupDirectory, BackupFolder, _relativeLocation, userDirecotryName);
+            var userDirectory = Directory.GetParent(saveGameDirecotry).Name;
+            var newBackupDirectory = Path.Combine(timedGameDirectory, Constants.SaveGames, userDirectory);
 
-            var backupPath = Path.Combine(backupDirectory, originalPath);
+            var backupPath = Path.Combine(newBackupDirectory, Path.GetFileName(saveGameDirecotry));
             return backupPath;
         }
 
-        public string GetLatest(string name)
+        public string GetLatestSaveGameBackup(string gameName)
         {
-            var latestBackup = GetLatestBackup(name);
+            var latestBackup = GetLatestBackup(gameName);
             if (string.IsNullOrEmpty(latestBackup))
             {
                 return null;
             }
 
-            var relativeBackupPath = Path.Combine(latestBackup, BackupFolder, _relativeLocation);
-            if (!Directory.Exists(relativeBackupPath))
+            var saveGameDirectory = Path.Combine(latestBackup, Constants.SaveGames);
+            if (!Directory.Exists(saveGameDirectory))
             {
                 return null;
             }
 
-            var userDirecotry = Directory.GetDirectories(relativeBackupPath).FirstOrDefault();
+            var userDirecotry = Directory.GetDirectories(saveGameDirectory).FirstOrDefault();
             if (string.IsNullOrEmpty(userDirecotry))
             {
                 return null;
             }
 
-            var latest = Directory.GetFileSystemEntries(userDirecotry).FirstOrDefault();
+            var latestSaveGame = Directory.GetFileSystemEntries(userDirecotry).FirstOrDefault();
 
-            return latest;
+            return latestSaveGame;
         }
         
-        public string GetLatestBackup(string name)
+        public string GetLatestBackup(string gameName)
         {
-            name = GetDirectoryNameFixer().ReplaceInvalidCharacters(name);
-            var gameBackupPath = Path.Combine(_backupDirectory, name);
+            gameName = GetDirectoryNameFixer().ReplaceInvalidCharacters(gameName);
+            var gameBackupPath = Path.Combine(_backupDirectory, gameName);
             if (!Directory.Exists(gameBackupPath))
                 return null;
 
@@ -87,12 +84,12 @@ namespace BackMeUp
             return latestDirectory;
         }
 
-        public string GetNewTimedBackupPath(string name)
+        public string GetTimedGameBackupDirectory(string gameName)
         {
-            name = GetDirectoryNameFixer().ReplaceInvalidCharacters(name);
+            gameName = GetDirectoryNameFixer().ReplaceInvalidCharacters(gameName);
             var now = GetDateTimeWrapper().Now();
             var timedFolderName = string.Format("{0}", now.ToString("yyyy-MM-dd_HHmmss"));
-            return Path.Combine(_backupDirectory, name, timedFolderName);
+            return Path.Combine(_backupDirectory, gameName, timedFolderName);
         }
     }
 }

@@ -20,11 +20,8 @@ namespace Sandbox
 
         private static readonly Configuration Configuration = new Configuration
         {
-            BackupDirectory = "Backup",
-            //AppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            ProgramFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-            //RelativeAppDataLocation = @"Ubisoft Game Launcher\spool",
-            RelativeProgramFilesLocation = @"Ubisoft\Ubisoft Game Launcher\savegames",
+            BackupDirectory = "H:\\Backup",
+            SaveGameDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
         };
 
         private static readonly Game[] _games = 
@@ -46,10 +43,10 @@ namespace Sandbox
         private static void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
-            var watcher = new SaveWatcher(Configuration);
+            var saveWatcher = new SaveWatcher(Configuration);
             var backupWatcher = new BackupWatcher(Configuration);
 
-            var latestSave = watcher.GetLatestSave();
+            var latestSave = saveWatcher.GetLatestSaveFilesDirecotry();
             var saveGameNumber = Path.GetFileName(latestSave);
             var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));

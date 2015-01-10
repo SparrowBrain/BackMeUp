@@ -5,19 +5,9 @@ using System.Threading.Tasks;
 
 namespace BackMeUp
 {
-        //    public BackupCalledWithValidConfiguration()
-        //{
-        //    _backupDirectory = @"Backup";
-        //    _appDataDirectory = @"%localappdata%";
-        //    _programFilesDirectory = "%programfiles%";
-        //    _relativeAppDataLocation = @"Ubisoft Game Launcher\spool";
-        //    _relativeProgramFilesLocation = @"Ubisoft\Ubisoft Game Launcher\savegames";
-        //}
-
     public class BackupCreator
     {
         private readonly string _backupDirectory;
-        private readonly string _relativeProgramFilesDirectory;
         private IFileSystem _fileSystem;
         private IBackupDirectoryResolver _backupDirectoryResolver;
 
@@ -33,14 +23,12 @@ namespace BackMeUp
             set { _backupDirectoryResolver = value; }
         }
 
-        public BackupCreator(string backupDirectory, string relativeProgramFilesDirectory)
+        public BackupCreator(string backupDirectory)
         {
             _backupDirectory = backupDirectory;
-            _relativeProgramFilesDirectory = relativeProgramFilesDirectory;
         }
 
-        public BackupCreator(Configuration configuration)
-            : this(configuration.BackupDirectory, configuration.RelativeProgramFilesLocation)
+        public BackupCreator(Configuration configuration): this(configuration.BackupDirectory)
         { }
 
         protected virtual IFileSystem GetFileSystem()
@@ -50,15 +38,15 @@ namespace BackMeUp
 
         protected virtual IBackupDirectoryResolver GetBackupDirectoryResolver()
         {
-            return new ProgramFilesDirectoryResolver(_relativeProgramFilesDirectory, _backupDirectory);
+            return new BackupDirectoryResolver(_backupDirectory);
         }
 
-        public void CreateBackup(string savegame, string name)
+        public void CreateBackup(string savegame, string gameName)
         {
             FileSystem.CreateDirectoryIfNotExists(_backupDirectory);
 
-            var newTimedBackupPath = BackupDirectoryResolver.GetNewTimedBackupPath(name);
-            var backupPath = BackupDirectoryResolver.GetBackupPath(savegame, newTimedBackupPath);
+            var newTimedBackupPath = BackupDirectoryResolver.GetTimedGameBackupDirectory(gameName);
+            var backupPath = BackupDirectoryResolver.GetFullNewBackupDirectory(savegame, newTimedBackupPath);
 
             FileSystem.CopyDirectory(savegame, backupPath);
         }

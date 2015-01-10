@@ -6,11 +6,10 @@ using BackMeUp.Utils;
 
 namespace BackMeUp
 {
+    // TODO: currently this does nothing. Asses whether it is needed.
     public class BackupCleaner
     {
         private readonly string _backupDirectory;
-        private readonly string _programFilesDirectory;
-        private readonly string _relativeProgramFilesLocation;
 
         private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -18,14 +17,12 @@ namespace BackMeUp
         public BackupCleaner(Configuration configuration)
         {
             _backupDirectory = configuration.BackupDirectory;
-            _programFilesDirectory = configuration.ProgramFilesDirectory;
-            _relativeProgramFilesLocation = configuration.RelativeProgramFilesLocation;
         }
 
-        public string GetLatestBackup(string name)
+        public string GetLatestBackup(string gameName)
         {
-            name = new DirectoryNameFixer().ReplaceInvalidCharacters(name);
-            var gameBackupPath = Path.Combine(_backupDirectory, name);
+            gameName = new DirectoryNameFixer().ReplaceInvalidCharacters(gameName);
+            var gameBackupPath = Path.Combine(_backupDirectory, gameName);
             if (!Directory.Exists(gameBackupPath))
                 return null;
 

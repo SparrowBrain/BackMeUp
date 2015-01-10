@@ -45,16 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppDataDirectoryResolver.cs" />
     <Compile Include="BackupCleaner.cs" />
     <Compile Include="BackupCreator.cs" />
     <Compile Include="BackupDirectoryResolver.cs" />
     <Compile Include="BackupWatcher.cs" />
     <Compile Include="Comparer.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DateTimeWrapper.cs" />
     <Compile Include="IFileSystem.cs" />
-    <Compile Include="ProgramFilesDirectoryResolver.cs" />
     <Compile Include="Utils\DirectoryNameFixer.cs" />
     <Compile Include="Utils\Crc16.cs" />
     <Compile Include="Game.cs" />

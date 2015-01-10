@@ -1,42 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackMeUp
 {
     public class SaveWatcher
     {
-        private readonly string _backupDirectory;
-        private readonly string _programFilesDirectory;
-        private readonly string _relativeProgramFilesLocation;
+        private readonly string _saveGameDirectory;
         
-        public SaveWatcher(string backupDirectory, string programFilesDirectory, string relativeProgramFilesLocation)
+        public SaveWatcher(string saveGameDirectory)
         {
-            _backupDirectory = backupDirectory;
-            _programFilesDirectory = programFilesDirectory;
-            _relativeProgramFilesLocation = relativeProgramFilesLocation;
+            _saveGameDirectory = saveGameDirectory;
         }
 
-        public SaveWatcher(Configuration configuration)
-            : this(
-                configuration.BackupDirectory, configuration.ProgramFilesDirectory, configuration.RelativeProgramFilesLocation)
+        public SaveWatcher(Configuration configuration): this(configuration.SaveGameDirectory)
         {
         }
 
-        // TODO: what happens if there are no saves?
-        public string GetLatestSave()
+        public string GetLatestSaveFilesDirecotry()
         {
-            var saveGamesPath = Path.Combine(_programFilesDirectory, _relativeProgramFilesLocation);
-            var saveGamesDirecotries =
-                Directory.GetDirectories(saveGamesPath, "*", SearchOption.AllDirectories)
-                    .Where(x => Path.GetFileName(x).All(char.IsDigit));
+            var directories = Directory.GetDirectories(_saveGameDirectory, "*", SearchOption.AllDirectories);
+            if (directories.Length == 0)
+            {
+                return null;
+            }
+
+            var saveFilesDirectories = directories.Where(x => Path.GetFileName(x).All(char.IsDigit)).ToArray();
+            if (saveFilesDirectories.Length == 0)
+            {
+                return null;
+            }
 
             var lastWriteTime=DateTime.MinValue;
             string latestSave = null;
-            foreach (var gameSave in saveGamesDirecotries)
+            foreach (var gameSave in saveFilesDirectories)
             {
                 var directoryinfo = new DirectoryInfo(gameSave);
                 if (directoryinfo.LastWriteTime > lastWriteTime)
