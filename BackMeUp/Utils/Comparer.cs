@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using System.Linq;
-using BackMeUp.Utils;
 
-namespace BackMeUp
+namespace BackMeUp.Utils
 {
     public class Comparer
     {

@@ -1,23 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BackMeUp
+namespace BackMeUp.Wrappers
 {
-    public interface IFileSystem
-    {
-        void CreateDirectoryIfNotExists(string path);
-
-        DirectoryInfo DirectoryCreateDirectory(string path);
-        bool DirectoryExists(string path);
-        string[] DirectoryGetFiles(string path);
-        void FileCopy(string sourceFileName, string destFileName);
-        void CopyDirectory(string sourceDirectory, string destinationDirectory);
-    }
-
     public class FileSystem:IFileSystem
     {
         public void CreateDirectoryIfNotExists(string path)

@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using BackMeUp.Utils;
+using BackMeUp.Wrappers;
 
-namespace BackMeUp
+namespace BackMeUp.Services
 {
     public interface IBackupDirectoryResolver
     {

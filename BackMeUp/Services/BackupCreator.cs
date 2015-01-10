@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BackMeUp.Data;
+using BackMeUp.Wrappers;
 
-namespace BackMeUp
+namespace BackMeUp.Services
 {
     public class BackupCreator
     {

@@ -1,12 +1,7 @@
 ﻿using System;
 
-namespace BackMeUp
+namespace BackMeUp.Wrappers
 {
-    public interface IDateTime
-    {
-        DateTime Now();
-    }
-
     public class DateTimeWrapper:IDateTime
     {
         public DateTime Now()

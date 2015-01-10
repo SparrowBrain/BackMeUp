@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BackMeUp;
+using BackMeUp.Data;
+using BackMeUp.Services;
 using BackMeUp.Utils;
 
 namespace Sandbox
@@ -47,6 +49,12 @@ namespace Sandbox
             var backupWatcher = new BackupWatcher(Configuration);
 
             var latestSave = saveWatcher.GetLatestSaveFilesDirecotry();
+            if (string.IsNullOrEmpty(latestSave))
+            {
+                Console.WriteLine("No saves found.");
+                return;
+            }
+
             var saveGameNumber = Path.GetFileName(latestSave);
             var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));
