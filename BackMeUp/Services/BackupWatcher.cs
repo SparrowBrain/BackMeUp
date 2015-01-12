@@ -4,9 +4,9 @@ namespace BackMeUp.Services
 {
     public class BackupWatcher
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IBackupDirectoryResolver _backupDirectoryResolver;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        
+
         public BackupWatcher(IBackupDirectoryResolver backupDirectoryResolver)
         {
             _backupDirectoryResolver = backupDirectoryResolver;
@@ -15,9 +15,9 @@ namespace BackMeUp.Services
         public string GetLatestGameSaveBackup(string gameName)
         {
             var latestSaveGameBackup = _backupDirectoryResolver.GetLatestSaveFilesBackupPath(gameName);
-            if (_logger.IsDebugEnabled)
+            if (Logger.IsDebugEnabled)
             {
-                _logger.Debug("{0}: Latest backup={1}", "GetLatestGameSaveBackup()", latestSaveGameBackup);
+                Logger.Debug("{0}: Latest backup={1}", "GetLatestGameSaveBackup()", latestSaveGameBackup);
             }
             return latestSaveGameBackup;
         }

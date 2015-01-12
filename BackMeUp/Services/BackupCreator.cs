@@ -10,7 +10,7 @@ namespace BackMeUp.Services
         private readonly IFileOperationsHelper _fileOperationsHelper;
         private readonly IBackupDirectoryResolver _backupDirectoryResolver;
         // TODO do something about logger tesing?
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public BackupCreator(Configuration configuration, IBackupDirectoryResolver backupDirectoryResolver,
             IFileOperationsHelper fileOperationsHelper)
@@ -29,9 +29,9 @@ namespace BackMeUp.Services
 
             _fileOperationsHelper.CopyDirectory(savegame, backupPath);
 
-            if (_logger.IsDebugEnabled)
+            if (Logger.IsDebugEnabled)
             {
-                _logger.Debug("{0}: Backup created={1}", "CreateBackup()", backupPath);
+                Logger.Debug("{0}: Backup created={1}", "CreateBackup()", backupPath);
             }
         }
     }

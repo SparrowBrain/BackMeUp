@@ -11,16 +11,14 @@ namespace BackMeUp.Services
     public class BackupDirectoryResolver : IBackupDirectoryResolver
     {
         private const string DateTimeFormat = "yyyy-MM-dd_HHmmss";
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly string _backupDirectory;
-
-        private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
+        private static readonly Regex BackupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+        private readonly string _backupDirectory;
         private readonly IDirectory _directory;
         private readonly IDirectoryNameFixer _directoryNameFixer;
-
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public BackupDirectoryResolver(string backupDirectory, IDirectory directory,
             IDirectoryNameFixer directoryNameFixer)
@@ -44,9 +42,9 @@ namespace BackMeUp.Services
             var latestBackup = GetLatestBackupPath(gameName);
             if (string.IsNullOrEmpty(latestBackup))
             {
-                if (_logger.IsDebugEnabled)
+                if (Logger.IsDebugEnabled)
                 {
-                    _logger.Debug("{0}: No backups found for game {1}", "GetLatestSaveFilesBackupPath()", gameName);
+                    Logger.Debug("{0}: No backups found for game {1}", "GetLatestSaveFilesBackupPath()", gameName);
                 }
                 return null;
             }
@@ -54,9 +52,9 @@ namespace BackMeUp.Services
             var saveGameDirectory = Path.Combine(latestBackup, Constants.SaveGames);
             if (!_directory.Exists(saveGameDirectory))
             {
-                if (_logger.IsDebugEnabled)
+                if (Logger.IsDebugEnabled)
                 {
-                    _logger.Debug("{0}: No savegame directory found {1}", "GetLatestSaveFilesBackupPath()",
+                    Logger.Debug("{0}: No savegame directory found {1}", "GetLatestSaveFilesBackupPath()",
                         saveGameDirectory);
                 }
                 return null;
@@ -65,9 +63,9 @@ namespace BackMeUp.Services
             var userDirecotry = _directory.GetDirectories(saveGameDirectory).FirstOrDefault();
             if (string.IsNullOrEmpty(userDirecotry))
             {
-                if (_logger.IsDebugEnabled)
+                if (Logger.IsDebugEnabled)
                 {
-                    _logger.Debug("{0}: No user directories found {1}", "GetLatestSaveFilesBackupPath()", userDirecotry);
+                    Logger.Debug("{0}: No user directories found {1}", "GetLatestSaveFilesBackupPath()", userDirecotry);
                 }
                 return null;
             }
@@ -97,7 +95,7 @@ namespace BackMeUp.Services
             var backupDirectories = _directory.GetDirectories(gameBackupPath);
 
             var validDirecotries =
-                backupDirectories.Where(folder => _backupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
+                backupDirectories.Where(folder => BackupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
 
             validDirecotries.Sort();
             var latestDirectory = validDirecotries.LastOrDefault();
