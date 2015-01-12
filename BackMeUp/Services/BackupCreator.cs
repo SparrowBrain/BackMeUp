@@ -1,6 +1,6 @@
 ﻿using BackMeUp.Data;
 using BackMeUp.Utils;
-using BackMeUp.Wrappers;
+using NLog;
 
 namespace BackMeUp.Services
 {
@@ -9,6 +9,8 @@ namespace BackMeUp.Services
         private readonly string _backupDirectory;
         private readonly IFileOperationsHelper _fileOperationsHelper;
         private readonly IBackupDirectoryResolver _backupDirectoryResolver;
+        // TODO do something about logger tesing?
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public BackupCreator(Configuration configuration, IBackupDirectoryResolver backupDirectoryResolver,
             IFileOperationsHelper fileOperationsHelper)
@@ -26,6 +28,11 @@ namespace BackMeUp.Services
             var backupPath = _backupDirectoryResolver.GetSaveFilesBackupPath(savegame, newTimedBackupPath);
 
             _fileOperationsHelper.CopyDirectory(savegame, backupPath);
+
+            if (_logger.IsDebugEnabled)
+            {
+                _logger.Debug("{0}: Backup created={1}", "CreateBackup()", backupPath);
+            }
         }
     }
 

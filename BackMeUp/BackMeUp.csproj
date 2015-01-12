@@ -51,6 +51,7 @@
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />
+    <Compile Include="Services\IBackupDirectoryResolver.cs" />
     <Compile Include="Utils\Comparer.cs" />
     <Compile Include="Data\Configuration.cs" />
     <Compile Include="Data\Constants.cs" />
