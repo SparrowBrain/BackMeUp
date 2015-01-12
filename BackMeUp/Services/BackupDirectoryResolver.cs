@@ -9,9 +9,9 @@ namespace BackMeUp.Services
 {
     public interface IBackupDirectoryResolver
     {
-        string GetFullNewBackupDirectory(string saveGameDirecotry, string timedGameDirectory);
-        string GetLatestSaveGameBackup(string gameName);
-        string GetTimedGameBackupDirectory(string gameName);
+        string GetSaveFilesBackupPath(string saveGameDirecotry, string timedGameDirectory);
+        string GetLatestSaveFilesBackupPath(string gameName);
+        string GetNewTimedGameBackupPath(string gameName);
     }
 
     public class BackupDirectoryResolver : IBackupDirectoryResolver
@@ -30,18 +30,18 @@ namespace BackMeUp.Services
             _directoryNameFixer = directoryNameFixer;
         }
 
-        public string GetFullNewBackupDirectory(string saveGameDirecotry, string timedGameDirectory)
+        public string GetSaveFilesBackupPath(string saveGameDirecotry, string timedGameDirectory)
         {
             var userDirectory = Directory.GetParent(saveGameDirecotry).Name;
             var newBackupDirectory = Path.Combine(timedGameDirectory, Constants.SaveGames, userDirectory);
 
-            var backupPath = Path.Combine(newBackupDirectory, Path.GetFileName(saveGameDirecotry));
-            return backupPath;
+            var saveFilesPath = Path.Combine(newBackupDirectory, Path.GetFileName(saveGameDirecotry));
+            return saveFilesPath;
         }
 
-        public string GetLatestSaveGameBackup(string gameName)
+        public string GetLatestSaveFilesBackupPath(string gameName)
         {
-            var latestBackup = GetLatestBackup(gameName);
+            var latestBackup = GetLatestBackupPath(gameName);
             if (string.IsNullOrEmpty(latestBackup))
             {
                 return null;
@@ -59,12 +59,12 @@ namespace BackMeUp.Services
                 return null;
             }
 
-            var latestSaveGame = _fileSystem.DirectoryGetFileSystemEntries(userDirecotry).FirstOrDefault();
+            var latestSaveFilesPath = _fileSystem.DirectoryGetFileSystemEntries(userDirecotry).FirstOrDefault();
 
-            return latestSaveGame;
+            return latestSaveFilesPath;
         }
         
-        public string GetLatestBackup(string gameName)
+        public string GetLatestBackupPath(string gameName)
         {
             gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
             var gameBackupPath = Path.Combine(_backupDirectory, gameName);
@@ -80,7 +80,7 @@ namespace BackMeUp.Services
             return latestDirectory;
         }
 
-        public string GetTimedGameBackupDirectory(string gameName)
+        public string GetNewTimedGameBackupPath(string gameName)
         {
             gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
             var now = SystemTime.Now();

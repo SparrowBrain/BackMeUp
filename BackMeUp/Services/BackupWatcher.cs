@@ -11,7 +11,7 @@
 
         public string GetLatestGameSaveBackup(string gameName)
         {
-            var latestSaveGameBackup = _backupDirectoryResolver.GetLatestSaveGameBackup(gameName);
+            var latestSaveGameBackup = _backupDirectoryResolver.GetLatestSaveFilesBackupPath(gameName);
             return latestSaveGameBackup;
         }
     }

@@ -5,7 +5,7 @@ namespace BackMeUp.Wrappers
     public interface IFileSystem
     {
         void CreateDirectoryIfNotExists(string path);
-        void CopyDirectory(string sourceDirectory, string destinationDirectory);
+        void CopyDirectory(string sourcePath, string destinationPath);
 
         DirectoryInfo DirectoryCreateDirectory(string path);
         bool DirectoryExists(string path);

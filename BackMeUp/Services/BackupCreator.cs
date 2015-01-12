@@ -21,8 +21,8 @@ namespace BackMeUp.Services
         {
             _fileSystem.CreateDirectoryIfNotExists(_backupDirectory);
 
-            var newTimedBackupPath = _backupDirectoryResolver.GetTimedGameBackupDirectory(gameName);
-            var backupPath = _backupDirectoryResolver.GetFullNewBackupDirectory(savegame, newTimedBackupPath);
+            var newTimedBackupPath = _backupDirectoryResolver.GetNewTimedGameBackupPath(gameName);
+            var backupPath = _backupDirectoryResolver.GetSaveFilesBackupPath(savegame, newTimedBackupPath);
 
             _fileSystem.CopyDirectory(savegame, backupPath);
         }

@@ -12,14 +12,14 @@ namespace BackMeUp.Wrappers
             }
         }
         
-        public void CopyDirectory(string sourceDirectory, string destinationDirectory)
+        public void CopyDirectory(string sourcePath, string destinationPath)
         {
-            CreateDirectoryIfNotExists(destinationDirectory);
+            CreateDirectoryIfNotExists(destinationPath);
 
-            foreach (var file in DirectoryGetFiles(sourceDirectory))
+            foreach (var file in DirectoryGetFiles(sourcePath))
             {
                 var fileName = Path.GetFileName(file);
-                FileCopy(file, Path.Combine(destinationDirectory, fileName));
+                FileCopy(file, Path.Combine(destinationPath, fileName));
             }
         }
 
