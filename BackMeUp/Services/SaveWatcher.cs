@@ -3,27 +3,30 @@ using System.IO;
 using System.Linq;
 using BackMeUp.Data;
 using BackMeUp.Wrappers;
+using NLog;
 
 namespace BackMeUp.Services
 {
     public class SaveWatcher
     {
         private readonly string _saveGameDirectory;
-        private readonly IFileSystem _fileSystem;
+        private readonly IDirectory _directory;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
         
         
 
-        public SaveWatcher(Configuration configuration, IFileSystem fileSystem)
+        public SaveWatcher(Configuration configuration, IDirectory directory)
         {
             _saveGameDirectory = configuration.SaveGameDirectory;
-            _fileSystem = fileSystem;
+            _directory = directory;
         }
 
         public string GetLatestSaveFilesPath()
         {
-            var directories = _fileSystem.DirectoryGetDirectories(_saveGameDirectory, "*", SearchOption.AllDirectories);
+            var directories = _directory.GetDirectories(_saveGameDirectory, "*", SearchOption.AllDirectories);
             if (directories.Length == 0)
             {
+                
                 return null;
             }
 
@@ -38,7 +41,7 @@ namespace BackMeUp.Services
             string latestSave = null;
             foreach (var gameSave in saveFilesDirectories)
             {
-                var directoryLastWriteTime = _fileSystem.DirectoryGetLastWriteTime(gameSave);
+                var directoryLastWriteTime = _directory.GetLastWriteTime(gameSave);
                 if (directoryLastWriteTime > lastWriteTime)
                 {
                     lastWriteTime = directoryLastWriteTime;

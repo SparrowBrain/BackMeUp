@@ -1,4 +1,5 @@
 ﻿using BackMeUp.Data;
+using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 
 namespace BackMeUp.Services
@@ -6,25 +7,25 @@ namespace BackMeUp.Services
     public class BackupCreator
     {
         private readonly string _backupDirectory;
-        private readonly IFileSystem _fileSystem;
+        private readonly IFileOperationsHelper _fileOperationsHelper;
         private readonly IBackupDirectoryResolver _backupDirectoryResolver;
 
         public BackupCreator(Configuration configuration, IBackupDirectoryResolver backupDirectoryResolver,
-            IFileSystem fileSystem)
+            IFileOperationsHelper fileOperationsHelper)
         {
             _backupDirectory = configuration.BackupDirectory;
             _backupDirectoryResolver = backupDirectoryResolver;
-            _fileSystem = fileSystem;
+            _fileOperationsHelper = fileOperationsHelper;
         }
 
         public void CreateBackup(string savegame, string gameName)
         {
-            _fileSystem.CreateDirectoryIfNotExists(_backupDirectory);
+            _fileOperationsHelper.CreateDirectoryIfNotExists(_backupDirectory);
 
             var newTimedBackupPath = _backupDirectoryResolver.GetNewTimedGameBackupPath(gameName);
             var backupPath = _backupDirectoryResolver.GetSaveFilesBackupPath(savegame, newTimedBackupPath);
 
-            _fileSystem.CopyDirectory(savegame, backupPath);
+            _fileOperationsHelper.CopyDirectory(savegame, backupPath);
         }
     }
 

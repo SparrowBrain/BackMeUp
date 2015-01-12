@@ -35,6 +35,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,9 +54,13 @@
     <Compile Include="Utils\Comparer.cs" />
     <Compile Include="Data\Configuration.cs" />
     <Compile Include="Data\Constants.cs" />
+    <Compile Include="Wrappers\IDirectory.cs" />
+    <Compile Include="Wrappers\IFile.cs" />
+    <Compile Include="Wrappers\SystemDirectory.cs" />
+    <Compile Include="Wrappers\SystemFile.cs" />
     <Compile Include="Wrappers\SystemTime.cs" />
-    <Compile Include="Wrappers\FileSystem.cs" />
-    <Compile Include="Wrappers\IFileSystem.cs" />
+    <Compile Include="Utils\FileOperationsHelper.cs" />
+    <Compile Include="Utils\IFileOperationsHelper.cs" />
     <Compile Include="Utils\DirectoryNameFixer.cs" />
     <Compile Include="Utils\Crc16.cs" />
     <Compile Include="Data\Game.cs" />
@@ -63,6 +70,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

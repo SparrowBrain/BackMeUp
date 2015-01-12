@@ -20,13 +20,13 @@ namespace BackMeUp.Services
         private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private readonly string _backupDirectory;
-        private readonly IFileSystem _fileSystem;
+        private readonly IDirectory _directory;
         private readonly IDirectoryNameFixer _directoryNameFixer;
 
-        public BackupDirectoryResolver(string backupDirectory, IFileSystem fileSystem, IDirectoryNameFixer directoryNameFixer)
+        public BackupDirectoryResolver(string backupDirectory, IDirectory directory, IDirectoryNameFixer directoryNameFixer)
         {
             _backupDirectory = backupDirectory;
-            _fileSystem = fileSystem;
+            _directory = directory;
             _directoryNameFixer = directoryNameFixer;
         }
 
@@ -48,18 +48,18 @@ namespace BackMeUp.Services
             }
 
             var saveGameDirectory = Path.Combine(latestBackup, Constants.SaveGames);
-            if (!_fileSystem.DirectoryExists(saveGameDirectory))
+            if (!_directory.Exists(saveGameDirectory))
             {
                 return null;
             }
 
-            var userDirecotry = _fileSystem.DirectoryGetDirectories(saveGameDirectory).FirstOrDefault();
+            var userDirecotry = _directory.GetDirectories(saveGameDirectory).FirstOrDefault();
             if (string.IsNullOrEmpty(userDirecotry))
             {
                 return null;
             }
 
-            var latestSaveFilesPath = _fileSystem.DirectoryGetFileSystemEntries(userDirecotry).FirstOrDefault();
+            var latestSaveFilesPath = _directory.GetFileSystemEntries(userDirecotry).FirstOrDefault();
 
             return latestSaveFilesPath;
         }
@@ -68,10 +68,10 @@ namespace BackMeUp.Services
         {
             gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
             var gameBackupPath = Path.Combine(_backupDirectory, gameName);
-            if (!_fileSystem.DirectoryExists(gameBackupPath))
+            if (!_directory.Exists(gameBackupPath))
                 return null;
 
-            var backupDirectories = _fileSystem.DirectoryGetDirectories(gameBackupPath);
+            var backupDirectories = _directory.GetDirectories(gameBackupPath);
 
             var validDirecotries = backupDirectories.Where(folder => _backupFolderRegex.IsMatch(Path.GetFileName(folder))).ToList();
 

@@ -33,8 +33,10 @@ namespace Sandbox
             new Game ("Assasin's Creed IV Back Flag", 437)
         };
 
-        private static readonly IFileSystem FileSystem = new FileSystem();
-        private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, FileSystem, new DirectoryNameFixer());
+        private static readonly IFile SystemFile = new SystemFile();
+        private static readonly IDirectory SystemDirectory = new SystemDirectory();
+        private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, SystemDirectory, new DirectoryNameFixer());
+        private static readonly IFileOperationsHelper FileOperationsHelper = new FileOperationsHelper(SystemFile, SystemDirectory);
         
 
         static void Main(string[] args)
@@ -50,7 +52,7 @@ namespace Sandbox
         private static void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
-            var saveWatcher = new SaveWatcher(Configuration, FileSystem);
+            var saveWatcher = new SaveWatcher(Configuration, SystemDirectory);
             var backupWatcher = new BackupWatcher(BackupDirectoryResolver);
 
             var latestSave = saveWatcher.GetLatestSaveFilesPath();
@@ -82,7 +84,7 @@ namespace Sandbox
             if (!saveBackedUp)
             {
                 Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
-                var backupCreator = new BackupCreator(Configuration, BackupDirectoryResolver, FileSystem);
+                var backupCreator = new BackupCreator(Configuration, BackupDirectoryResolver, FileOperationsHelper);
                 backupCreator.CreateBackup(latestSave, game.Name);
             }
             Console.WriteLine("Done");
