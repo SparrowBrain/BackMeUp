@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace BackMeUp.Wrappers
 {
@@ -13,6 +14,7 @@ namespace BackMeUp.Wrappers
         string[] DirectoryGetDirectories(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetFiles(string path);
         string[] DirectoryGetFileSystemEntries(string path);
+        DateTime DirectoryGetLastWriteTime(string path);
 
         void FileCopy(string sourceFileName, string destFileName);
     }

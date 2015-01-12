@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace BackMeUp.Wrappers
@@ -53,6 +54,11 @@ namespace BackMeUp.Wrappers
         public string[] DirectoryGetFileSystemEntries(string path)
         {
             return Directory.GetFileSystemEntries(path);
+        }
+
+        public DateTime DirectoryGetLastWriteTime(string path)
+        {
+            return Directory.GetLastWriteTime(path);
         }
 
         #endregion Directory

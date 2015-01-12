@@ -53,7 +53,7 @@ namespace Sandbox
             var saveWatcher = new SaveWatcher(Configuration, FileSystem);
             var backupWatcher = new BackupWatcher(BackupDirectoryResolver);
 
-            var latestSave = saveWatcher.GetLatestSaveFilesDirecotry();
+            var latestSave = saveWatcher.GetLatestSaveFilesPath();
             if (string.IsNullOrEmpty(latestSave))
             {
                 Console.WriteLine("No saves found.");

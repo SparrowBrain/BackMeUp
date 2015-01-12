@@ -19,7 +19,7 @@ namespace BackMeUp.Services
             _fileSystem = fileSystem;
         }
 
-        public string GetLatestSaveFilesDirecotry()
+        public string GetLatestSaveFilesPath()
         {
             var directories = _fileSystem.DirectoryGetDirectories(_saveGameDirectory, "*", SearchOption.AllDirectories);
             if (directories.Length == 0)
@@ -27,6 +27,7 @@ namespace BackMeUp.Services
                 return null;
             }
 
+            // TODO: Shouldn't I be more specific about searching for folders inside user folders?
             var saveFilesDirectories = directories.Where(x => Path.GetFileName(x).All(char.IsDigit)).ToArray();
             if (saveFilesDirectories.Length == 0)
             {
@@ -37,10 +38,10 @@ namespace BackMeUp.Services
             string latestSave = null;
             foreach (var gameSave in saveFilesDirectories)
             {
-                var directoryinfo = new DirectoryInfo(gameSave);
-                if (directoryinfo.LastWriteTime > lastWriteTime)
+                var directoryLastWriteTime = _fileSystem.DirectoryGetLastWriteTime(gameSave);
+                if (directoryLastWriteTime > lastWriteTime)
                 {
-                    lastWriteTime = directoryinfo.LastWriteTime;
+                    lastWriteTime = directoryLastWriteTime;
                     latestSave = gameSave;
                 }
             }
