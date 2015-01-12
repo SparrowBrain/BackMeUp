@@ -1,7 +1,7 @@
 ﻿using BackMeUp.Utils;
 using NUnit.Framework;
 
-namespace BackMeUpTests.Utils
+namespace BackMeUp.UnitTests.Utils
 {
     [TestFixture]
     public class DirectoryNameFixerTests

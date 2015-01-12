@@ -51,9 +51,8 @@
     <Compile Include="Utils\Comparer.cs" />
     <Compile Include="Data\Configuration.cs" />
     <Compile Include="Data\Constants.cs" />
-    <Compile Include="Wrappers\DateTimeWrapper.cs" />
+    <Compile Include="Wrappers\SystemTime.cs" />
     <Compile Include="Wrappers\FileSystem.cs" />
-    <Compile Include="Wrappers\IDateTime.cs" />
     <Compile Include="Wrappers\IFileSystem.cs" />
     <Compile Include="Utils\DirectoryNameFixer.cs" />
     <Compile Include="Utils\Crc16.cs" />

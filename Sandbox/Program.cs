@@ -34,7 +34,7 @@ namespace Sandbox
         };
 
         private static readonly IFileSystem FileSystem = new FileSystem();
-        private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, FileSystem, new DirectoryNameFixer(),new DateTimeWrapper());
+        private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, FileSystem, new DirectoryNameFixer());
         
 
         static void Main(string[] args)

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackMeUp", "BackMeUp\BackMe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{04B2C5FE-4D4F-48B7-85B0-EDDDE5F1D37C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackMeUpTests", "BackMeUpTests\BackMeUpTests.csproj", "{62D30257-810D-49A8-8675-B8316C786DB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackMeUp.UnitTests", "BackMeUpTests\BackMeUp.UnitTests.csproj", "{62D30257-810D-49A8-8675-B8316C786DB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{888BBE33-133D-4230-8D8C-87D71BFA9A50}"
 	ProjectSection(SolutionItems) = preProject

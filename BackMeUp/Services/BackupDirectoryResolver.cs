@@ -16,19 +16,18 @@ namespace BackMeUp.Services
 
     public class BackupDirectoryResolver : IBackupDirectoryResolver
     {
+        private const string DateTimeFormat = "yyyy-MM-dd_HHmmss";
         private readonly Regex _backupFolderRegex = new Regex(@"\d{4}-\d{2}-\d{2}_\d{6}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private readonly string _backupDirectory;
         private readonly IFileSystem _fileSystem;
         private readonly IDirectoryNameFixer _directoryNameFixer;
-        private readonly IDateTime _dateTimeWrapper;
 
-        public BackupDirectoryResolver(string backupDirectory, IFileSystem fileSystem, IDirectoryNameFixer directoryNameFixer, IDateTime dateTimeWrapper)
+        public BackupDirectoryResolver(string backupDirectory, IFileSystem fileSystem, IDirectoryNameFixer directoryNameFixer)
         {
             _backupDirectory = backupDirectory;
             _fileSystem = fileSystem;
             _directoryNameFixer = directoryNameFixer;
-            _dateTimeWrapper = dateTimeWrapper;
         }
 
         public string GetFullNewBackupDirectory(string saveGameDirecotry, string timedGameDirectory)
@@ -84,8 +83,8 @@ namespace BackMeUp.Services
         public string GetTimedGameBackupDirectory(string gameName)
         {
             gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
-            var now = _dateTimeWrapper.Now();
-            var timedFolderName = string.Format("{0}", now.ToString("yyyy-MM-dd_HHmmss"));
+            var now = SystemTime.Now();
+            var timedFolderName = string.Format("{0}", now.ToString(DateTimeFormat));
             return Path.Combine(_backupDirectory, gameName, timedFolderName);
         }
     }
