@@ -24,7 +24,7 @@ namespace Sandbox
         private static readonly Configuration Configuration = new Configuration
         {
             BackupDirectory = "H:\\Backup",
-            SaveGameDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
+            SaveGamesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
         };
 
         private static readonly Game[] _games = 

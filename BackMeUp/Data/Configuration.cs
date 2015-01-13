@@ -6,6 +6,6 @@
 
         // HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Uplay
         // InstallLocation
-        public string SaveGameDirectory { get; set; }
+        public string SaveGamesDirectory { get; set; }
     }
 }
