@@ -2,7 +2,13 @@
 
 namespace BackMeUp.Utils
 {
-    public class Crc16
+    public interface ICrc16
+    {
+        ushort ComputeChecksum(byte[] bytes);
+        byte[] ComputeChecksumBytes(byte[] bytes);
+    }
+
+    public class Crc16 : ICrc16
     {
         private const ushort Polynomial = 0xA001;
         private readonly ushort[] _table = new ushort[256];

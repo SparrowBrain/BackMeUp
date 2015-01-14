@@ -53,6 +53,7 @@
     <Compile Include="Services\BackupDirectoryResolverTests.cs" />
     <Compile Include="Services\BackupWatcherTests.cs" />
     <Compile Include="Services\SaveWatcherTests.cs" />
+    <Compile Include="Utils\Crc16Tests.cs" />
     <Compile Include="Utils\DirectoryNameFixerTests.cs" />
   </ItemGroup>
   <ItemGroup>

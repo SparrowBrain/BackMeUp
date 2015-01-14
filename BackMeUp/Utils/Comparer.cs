@@ -1,9 +1,18 @@
 ﻿using System.IO;
+using BackMeUp.Wrappers;
 
 namespace BackMeUp.Utils
 {
     public class Comparer
     {
+        private ICrc16 Crc { get; set; }
+        private IDirectory Directory { get; set; }
+        public Comparer(ICrc16 crc, IDirectory directory)
+        {
+            Crc = crc;
+            Directory = directory;
+        }
+
         public bool CompareDirectories(string saveDir, string backupDir)
         {
             var saveFiles = Directory.GetFiles(saveDir);
@@ -47,7 +56,7 @@ namespace BackMeUp.Utils
                 bytes = new byte[file.Length];
                 file.Read(bytes, 0, (int) file.Length);
             }
-            return new Crc16().ComputeChecksum(bytes);
+            return Crc.ComputeChecksum(bytes);
         }
     }
 }
