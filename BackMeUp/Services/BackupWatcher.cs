@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System;
+using NLog;
 
 namespace BackMeUp.Services
 {
@@ -14,6 +15,11 @@ namespace BackMeUp.Services
 
         public string GetLatestGameSaveBackup(string gameName)
         {
+            if (string.IsNullOrEmpty(gameName))
+            {
+                throw new ArgumentException("gameName");
+            }
+
             var latestSaveGameBackup = _backupDirectoryResolver.GetLatestSaveFilesBackupPath(gameName);
             if (Logger.IsDebugEnabled)
             {

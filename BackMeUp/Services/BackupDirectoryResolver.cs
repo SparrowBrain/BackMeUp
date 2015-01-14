@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BackMeUp.Data;
@@ -28,17 +29,31 @@ namespace BackMeUp.Services
             _directoryNameFixer = directoryNameFixer;
         }
 
-        public string GetSaveFilesBackupPath(string saveGameDirecotry, string timedGameDirectory)
+        public string GetSaveFilesBackupPath(string gameSaveFilesDirecotry, string timedGameDirectory)
         {
-            var userDirectory = Directory.GetParent(saveGameDirecotry).Name;
+            if (string.IsNullOrEmpty(gameSaveFilesDirecotry))
+            {
+                throw new ArgumentException("gameSaveFilesDirectory");
+            }
+            if (string.IsNullOrEmpty(timedGameDirectory))
+            {
+                throw new ArgumentException("timedGameDirectory");
+            }
+
+            var userDirectory = Directory.GetParent(gameSaveFilesDirecotry).Name;
             var newBackupDirectory = Path.Combine(timedGameDirectory, Constants.SaveGames, userDirectory);
 
-            var saveFilesPath = Path.Combine(newBackupDirectory, Path.GetFileName(saveGameDirecotry));
+            var saveFilesPath = Path.Combine(newBackupDirectory, Path.GetFileName(gameSaveFilesDirecotry));
             return saveFilesPath;
         }
 
         public string GetLatestSaveFilesBackupPath(string gameName)
         {
+            if (string.IsNullOrEmpty(gameName))
+            {
+                throw new ArgumentException("gameName");
+            }
+
             var latestBackup = GetLatestBackupPath(gameName);
             if (string.IsNullOrEmpty(latestBackup))
             {
@@ -70,21 +85,31 @@ namespace BackMeUp.Services
                 return null;
             }
 
-            var latestSaveFilesPath = _directory.GetFileSystemEntries(userDirecotry).FirstOrDefault();
+            var latestSaveFilesPath = _directory.GetDirectories(userDirecotry).FirstOrDefault();
 
             return latestSaveFilesPath;
         }
 
         public string GetNewTimedGameBackupPath(string gameName)
         {
+            if (string.IsNullOrEmpty(gameName))
+            {
+                throw new ArgumentException("gameName");
+            }
+
             gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
             var now = SystemTime.Now();
-            var timedFolderName = string.Format("{0}", now.ToString(DateTimeFormat));
+            var timedFolderName = now.ToString(DateTimeFormat);
             return Path.Combine(_backupDirectory, gameName, timedFolderName);
         }
 
-        public string GetLatestBackupPath(string gameName)
+        private string GetLatestBackupPath(string gameName)
         {
+            if (string.IsNullOrEmpty(gameName))
+            {
+                throw new ArgumentException("gameName");
+            }
+
             gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
             var gameBackupPath = Path.Combine(_backupDirectory, gameName);
             if (!_directory.Exists(gameBackupPath))
