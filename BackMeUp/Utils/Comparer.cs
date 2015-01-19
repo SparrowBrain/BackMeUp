@@ -1,20 +1,33 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BackMeUp.Wrappers;
 
 namespace BackMeUp.Utils
 {
     public class Comparer
     {
-        private ICrc16 Crc { get; set; }
-        private IDirectory Directory { get; set; }
-        public Comparer(ICrc16 crc, IDirectory directory)
+        public Comparer(ICrc16 crc, IDirectory directory, IFile file)
         {
             Crc = crc;
             Directory = directory;
+            File = file;
         }
+
+        private ICrc16 Crc { get; set; }
+        private IDirectory Directory { get; set; }
+        public IFile File { get; set; }
 
         public bool CompareDirectories(string saveDir, string backupDir)
         {
+            if (string.IsNullOrEmpty(saveDir))
+            {
+                throw new ArgumentException("saveDir");
+            }
+            if (string.IsNullOrEmpty(backupDir))
+            {
+                throw new ArgumentException("backupDir");
+            }
+
             var saveFiles = Directory.GetFiles(saveDir);
             var backupFiles = Directory.GetFiles(backupDir);
 
@@ -36,6 +49,15 @@ namespace BackMeUp.Utils
 
         private bool CompareFiles(string file1, string file2)
         {
+            if (string.IsNullOrEmpty(file1))
+            {
+                throw new ArgumentException("file1");
+            }
+            if (string.IsNullOrEmpty(file2))
+            {
+                throw new ArgumentException("file2");
+            }
+
             if (Path.GetFileName(file1) != Path.GetFileName(file2))
             {
                 return false;
@@ -48,15 +70,21 @@ namespace BackMeUp.Utils
             return true;
         }
 
-        public ushort CalculateChecksum(string filePath)
+        private ushort CalculateChecksum(string filePath)
         {
-            byte[] bytes;
-            using (var file = new FileStream(filePath, FileMode.Open))
+            if (string.IsNullOrEmpty(filePath))
             {
-                bytes = new byte[file.Length];
-                file.Read(bytes, 0, (int) file.Length);
+                throw new ArgumentException("filePath");
             }
+
+            var bytes = ReadFile(filePath);
             return Crc.ComputeChecksum(bytes);
+        }
+
+        private byte[] ReadFile(string filePath)
+        {
+            var bytes = File.ReadAllBytes(filePath);
+            return bytes;
         }
     }
 }

@@ -60,8 +60,8 @@
     <Compile Include="Wrappers\SystemDirectory.cs" />
     <Compile Include="Wrappers\SystemFile.cs" />
     <Compile Include="Wrappers\SystemTime.cs" />
-    <Compile Include="Utils\FileOperationsHelper.cs" />
-    <Compile Include="Utils\IFileOperationsHelper.cs" />
+    <Compile Include="Utils\FileOperationHelper.cs" />
+    <Compile Include="Utils\IFileOperationHelper.cs" />
     <Compile Include="Utils\DirectoryNameFixer.cs" />
     <Compile Include="Utils\Crc16.cs" />
     <Compile Include="Data\Game.cs" />

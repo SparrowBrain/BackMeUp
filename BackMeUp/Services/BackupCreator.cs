@@ -8,13 +8,13 @@ namespace BackMeUp.Services
     public class BackupCreator
     {
         private readonly string _backupDirectory;
-        private readonly IFileOperationsHelper _fileOperationsHelper;
+        private readonly IFileOperationHelper _fileOperationsHelper;
         private readonly IBackupDirectoryResolver _backupDirectoryResolver;
         
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public BackupCreator(Configuration configuration, IBackupDirectoryResolver backupDirectoryResolver,
-            IFileOperationsHelper fileOperationsHelper)
+            IFileOperationHelper fileOperationsHelper)
         {
             _backupDirectory = configuration.BackupDirectory;
             _backupDirectoryResolver = backupDirectoryResolver;

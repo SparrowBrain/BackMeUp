@@ -10,6 +10,7 @@ namespace BackMeUp.Wrappers
         string[] GetDirectories(string path);
         string[] GetDirectories(string path, string searchPattern, SearchOption searchOption);
         string[] GetFiles(string path);
+        string[] GetFiles(string path, string searchPattern, SearchOption searchOption);
         string[] GetFileSystemEntries(string path);
         DateTime GetLastWriteTime(string path);
     }

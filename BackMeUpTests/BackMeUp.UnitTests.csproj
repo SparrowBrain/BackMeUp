@@ -53,8 +53,10 @@
     <Compile Include="Services\BackupDirectoryResolverTests.cs" />
     <Compile Include="Services\BackupWatcherTests.cs" />
     <Compile Include="Services\SaveWatcherTests.cs" />
+    <Compile Include="Utils\ComparerTests.cs" />
     <Compile Include="Utils\Crc16Tests.cs" />
     <Compile Include="Utils\DirectoryNameFixerTests.cs" />
+    <Compile Include="Utils\FileOperationHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BackMeUp\BackMeUp.csproj">

@@ -36,7 +36,7 @@ namespace Sandbox
         private static readonly IFile SystemFile = new SystemFile();
         private static readonly IDirectory SystemDirectory = new SystemDirectory();
         private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, SystemDirectory, new DirectoryNameFixer());
-        private static readonly IFileOperationsHelper FileOperationsHelper = new FileOperationsHelper(SystemFile, SystemDirectory);
+        private static readonly IFileOperationHelper FileOperationsHelper = new FileOperationHelper(SystemFile, SystemDirectory);
         
 
         static void Main(string[] args)
@@ -77,7 +77,7 @@ namespace Sandbox
             }
             else
             {
-                var comparer = new Comparer();
+                var comparer = new Comparer(new Crc16(), SystemDirectory, SystemFile);
                 saveBackedUp = comparer.CompareDirectories(latestSave, latestBackupSave);
             }
 

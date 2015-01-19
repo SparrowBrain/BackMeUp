@@ -20,6 +20,11 @@ namespace BackMeUp.Wrappers
             return Directory.GetFiles(path);
         }
 
+        public string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
+        {
+            return Directory.GetFiles(path, searchPattern, searchOption);
+        }
+
         public string[] GetDirectories(string path)
         {
             return Directory.GetDirectories(path);
