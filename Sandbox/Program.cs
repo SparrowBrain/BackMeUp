@@ -52,7 +52,7 @@ namespace Sandbox
         private static void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
-            var saveWatcher = new SaveWatcher(Configuration, SystemDirectory);
+            var saveWatcher = new SaveWatcher(Configuration.SaveGamesDirectory, SystemDirectory);
             var backupWatcher = new BackupWatcher(BackupDirectoryResolver);
 
             var latestSave = saveWatcher.GetLatestSaveFilesPath();
@@ -84,7 +84,7 @@ namespace Sandbox
             if (!saveBackedUp)
             {
                 Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
-                var backupCreator = new BackupCreator(Configuration, BackupDirectoryResolver, FileOperationsHelper);
+                var backupCreator = new BackupCreator(Configuration.BackupDirectory, BackupDirectoryResolver, FileOperationsHelper);
                 backupCreator.CreateBackup(latestSave, game.Name);
             }
             Console.WriteLine("Done");

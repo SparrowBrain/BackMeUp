@@ -13,9 +13,9 @@ namespace BackMeUp.Services
         private readonly IDirectory _directory;
         private readonly string _saveGameDirectory;
 
-        public SaveWatcher(Configuration configuration, IDirectory directory)
+        public SaveWatcher(string saveGamesDirectory, IDirectory directory)
         {
-            _saveGameDirectory = configuration.SaveGamesDirectory;
+            _saveGameDirectory = saveGamesDirectory;
             _directory = directory;
         }
 

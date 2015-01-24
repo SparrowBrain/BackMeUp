@@ -13,10 +13,10 @@ namespace BackMeUp.Services
         
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public BackupCreator(Configuration configuration, IBackupDirectoryResolver backupDirectoryResolver,
+        public BackupCreator(string backupDirectory, IBackupDirectoryResolver backupDirectoryResolver,
             IFileOperationHelper fileOperationsHelper)
         {
-            _backupDirectory = configuration.BackupDirectory;
+            _backupDirectory = backupDirectory;
             _backupDirectoryResolver = backupDirectoryResolver;
             _fileOperationsHelper = fileOperationsHelper;
         }

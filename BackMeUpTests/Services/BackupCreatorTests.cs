@@ -19,7 +19,7 @@ namespace BackMeUp.UnitTests.Services
             };
             IBackupDirectoryResolver fakeBackupDirectoryResolver = Substitute.For<IBackupDirectoryResolver>();
             fakeFileOperationsHelper = Substitute.For<IFileOperationHelper>();
-            return new BackupCreator(configuration, fakeBackupDirectoryResolver, fakeFileOperationsHelper);
+            return new BackupCreator(configuration.BackupDirectory, fakeBackupDirectoryResolver, fakeFileOperationsHelper);
         }
 
         [Test]
