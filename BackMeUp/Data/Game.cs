@@ -2,6 +2,9 @@
 {
     public class Game
     {
+        private Game()
+        {}
+
         public Game(string name, int saveGame)
         {
             Name = name;

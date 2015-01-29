@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackMeUp;
 using BackMeUp.Data;
+using BackMeUp.Data.Services;
 using BackMeUp.Services;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
@@ -41,12 +42,28 @@ namespace Sandbox
 
         static void Main(string[] args)
         {
+            WriteConfigurationXml();
+
             //Backup();
             //Watcher();
             //BackupWatcher();
             //FullBackupJob();
 
             BackupProcess();
+        }
+
+        private static void WriteConfigurationXml()
+        {
+            var configurationService = new ConfigurationService(new SystemFile());
+            var configuration = new Configuration
+            {
+                SaveGamesDirectory = @"C:\Saves",
+                BackupDirectory = @"C:\Backup",
+                BackupPeriod = TimeSpan.FromMinutes(10),
+                GameList = new List<Game>() { new Game(12), new Game("Far Cry 3", 46) }
+            };
+
+            configurationService.Write("abc.xml", configuration);
         }
 
         private static void FullBackupJob()
