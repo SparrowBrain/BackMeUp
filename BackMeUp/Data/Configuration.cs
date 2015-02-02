@@ -27,6 +27,25 @@ namespace BackMeUp.Data
 
         public List<Game> GameList { get; set; }
 
+        protected bool Equals(Configuration other)
+        {
+            return string.Equals(BackupDirectory, other.BackupDirectory) &&
+                   string.Equals(SaveGamesDirectory, other.SaveGamesDirectory) &&
+                   BackupPeriod.Equals(other.BackupPeriod) && Equals(GameList, other.GameList);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (BackupDirectory != null ? BackupDirectory.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (SaveGamesDirectory != null ? SaveGamesDirectory.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ BackupPeriod.GetHashCode();
+                hashCode = (hashCode*397) ^ (GameList != null ? GameList.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
         public override string ToString()
         {
             var gameListBuilder = new StringBuilder();
@@ -38,6 +57,12 @@ namespace BackMeUp.Data
                 BackupDirectory, SaveGamesDirectory, BackupPeriod, gameListBuilder);
         }
 
-
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Configuration) obj);
+        }
     }
 }

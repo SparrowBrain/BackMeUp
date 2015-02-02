@@ -34,57 +34,29 @@ namespace BackMeUp.UnitTests.Data.Services
             @"</Configuration>";
 
         private readonly byte[] _configurationToReadBytes = Encoding.UTF8.GetBytes(ConfigurationToRead);
-        
-        private ConfigurationService GetConfigurationService()
+
+        private TestableConfigurationService GetConfigurationService()
         {
             _file = Substitute.For<IFile>();
-            return new ConfigurationService(_file);
+            return new TestableConfigurationService(_file);
         }
 
-        [Test]
-        public void SetReadStream_MemoryStream_CurrentReadStreamIsSameMemoryStream()
+        private class TestableConfigurationService : ConfigurationService
         {
-            var configurationService = GetConfigurationService();
-            var memoryStream = new MemoryStream();
+            public TestableConfigurationService(IFile file) : base(file)
+            {
+            }
+            protected override Stream GetReadStream(string configurationXml)
+            {
+                return StreamToUse;
+            }
 
-            configurationService.SetReadStream(memoryStream);
+            protected override Stream GetWriteStream(string configurationXml)
+            {
+                return StreamToUse;
+            }
 
-            Assert.AreEqual(memoryStream, configurationService.CurrentReadStream);
-        }
-
-        [Test]
-        public void ResetReadStream_CurrentReadStreamIsNotNull_CurrentReadStreamIsNull()
-        {
-            var configurationService = GetConfigurationService();
-            var memoryStream = new MemoryStream();
-            configurationService.SetReadStream(memoryStream);
-
-            configurationService.ResetReadStream();
-
-            Assert.IsNull(configurationService.CurrentReadStream);
-        }
-
-        [Test]
-        public void SetWriteStream_MemoryStream_CurrentWriteStreamIsSameMemoryStream()
-        {
-            var configurationService = GetConfigurationService();
-            var memoryStream = new MemoryStream();
-
-            configurationService.SetWriteStream(memoryStream);
-
-            Assert.AreEqual(memoryStream, configurationService.CurrentWriteStream);
-        }
-
-        [Test]
-        public void ResetWriteStream_CurrentWriteStreamIsNotNull_CurrentWriteStreamIsNull()
-        {
-            var configurationService = GetConfigurationService();
-            var memoryStream = new MemoryStream();
-            configurationService.SetWriteStream(memoryStream);
-
-            configurationService.ResetWriteStream();
-
-            Assert.IsNull(configurationService.CurrentWriteStream);
+            public Stream StreamToUse { get; set; }
         }
        
         [Test]
@@ -104,7 +76,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationService();
             _file.Exists("configuration.xml").Returns(true);
             var memoryStream = new MemoryStream(_configurationToReadBytes);
-            configurationService.SetReadStream(memoryStream);
+            configurationService.StreamToUse = memoryStream;
 
             var configuration = configurationService.Read("configuration.xml");
 
@@ -117,7 +89,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationService();
             _file.Exists("configuration.xml").Returns(true);
             var memoryStream = new MemoryStream(_configurationToReadBytes);
-            configurationService.SetReadStream(memoryStream);
+            configurationService.StreamToUse = memoryStream;
 
             var configuration = configurationService.Read("configuration.xml");
 
@@ -130,7 +102,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationService();
             _file.Exists("configuration.xml").Returns(true);
             var memoryStream = new MemoryStream(_configurationToReadBytes);
-            configurationService.SetReadStream(memoryStream);
+            configurationService.StreamToUse = memoryStream;
 
             var configuration = configurationService.Read("configuration.xml");
 
@@ -143,7 +115,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationService();
             _file.Exists("configuration.xml").Returns(true);
             var memoryStream = new MemoryStream(_configurationToReadBytes);
-            configurationService.SetReadStream(memoryStream);
+            configurationService.StreamToUse = memoryStream;
 
             var configuration = configurationService.Read("configuration.xml");
 
@@ -156,11 +128,11 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationService();
             _file.Exists("configuration.xml").Returns(true);
             var memoryStream = new MemoryStream(_configurationToReadBytes);
-            configurationService.SetReadStream(memoryStream);
+            configurationService.StreamToUse = memoryStream;
 
             var configuration = configurationService.Read("configuration.xml");
 
-            var expectedGameList = new List<Game>() {new Game(12), new Game("Far Cry 3", 46)};
+            var expectedGameList = new List<Game> {new Game(12), new Game("Far Cry 3", 46)};
             Assert.AreEqual(expectedGameList, configuration.GameList);
         }
 
@@ -169,7 +141,7 @@ namespace BackMeUp.UnitTests.Data.Services
         {
             var configurationService = GetConfigurationService();
             var memoryStream = new MemoryStream();
-            configurationService.SetWriteStream(memoryStream);
+            configurationService.StreamToUse = memoryStream;
             var configuration = new Configuration();
 
             configurationService.Write("configuration.xml", configuration);
@@ -183,8 +155,8 @@ namespace BackMeUp.UnitTests.Data.Services
         {
             var configurationService = GetConfigurationService();
             var memoryStream = new MemoryStream();
-            configurationService.SetWriteStream(memoryStream);
-            var configuration = new Configuration()
+            configurationService.StreamToUse = memoryStream;
+            var configuration = new Configuration
             {
                 SaveGamesDirectory = @"C:\Saves",
             };
@@ -200,8 +172,8 @@ namespace BackMeUp.UnitTests.Data.Services
         {
             var configurationService = GetConfigurationService();
             var memoryStream = new MemoryStream();
-            configurationService.SetWriteStream(memoryStream);
-            var configuration = new Configuration()
+            configurationService.StreamToUse = memoryStream;
+            var configuration = new Configuration
             {
                 BackupDirectory = @"C:\Backup",
             };
@@ -217,8 +189,8 @@ namespace BackMeUp.UnitTests.Data.Services
         {
             var configurationService = GetConfigurationService();
             var memoryStream = new MemoryStream();
-            configurationService.SetWriteStream(memoryStream);
-            var configuration = new Configuration()
+            configurationService.StreamToUse = memoryStream;
+            var configuration = new Configuration
             {
                 BackupPeriod = TimeSpan.FromMinutes(10),
             };
@@ -234,10 +206,10 @@ namespace BackMeUp.UnitTests.Data.Services
         {
             var configurationService = GetConfigurationService();
             var memoryStream = new MemoryStream();
-            configurationService.SetWriteStream(memoryStream);
-            var configuration = new Configuration()
+            configurationService.StreamToUse = memoryStream;
+            var configuration = new Configuration
             {
-                GameList = new List<Game>() { new Game(12), new Game("Far Cry 3", 46) }
+                GameList = new List<Game> { new Game(12), new Game("Far Cry 3", 46) }
             };
 
             configurationService.Write("configuration.xml", configuration);
