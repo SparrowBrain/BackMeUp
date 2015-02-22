@@ -48,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Services\ConfigurationService.cs" />
+    <Compile Include="Data\Services\ConfigurationFactory.cs" />
+    <Compile Include="Data\Services\ConfigurationReader.cs" />
+    <Compile Include="Data\Services\ConfigurationWriter.cs" />
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />

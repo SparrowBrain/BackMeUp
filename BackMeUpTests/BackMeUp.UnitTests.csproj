@@ -48,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Services\ConfigurationServiceTests.cs" />
+    <Compile Include="Data\Services\ConfigurationFactoryTests.cs" />
+    <Compile Include="Data\Services\ConfigurationReaderTests.cs" />
+    <Compile Include="Data\Services\ConfigurationWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BackupCreatorTests.cs" />
     <Compile Include="Services\BackupDirectoryResolverTests.cs" />

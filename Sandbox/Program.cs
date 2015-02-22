@@ -54,7 +54,7 @@ namespace Sandbox
 
         private static void WriteConfigurationXml()
         {
-            var configurationService = new ConfigurationService(new SystemFile());
+            var configurationService = new ConfigurationWriter(new SystemFile());
             var configuration = new Configuration
             {
                 SaveGamesDirectory = @"C:\Saves",
