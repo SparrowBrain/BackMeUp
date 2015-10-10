@@ -48,12 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Services\GameConfigurationFactoryTests.cs" />
-    <Compile Include="Data\Services\GameConfigurationReaderTests.cs" />
-    <Compile Include="Data\Services\MainConfigurationFactoryTests.cs" />
-    <Compile Include="Data\Services\MainConfigurationReaderTests.cs" />
-    <Compile Include="Data\Services\GameConfigurationWriterTests.cs" />
-    <Compile Include="Data\Services\MainConfigurationWriterTests.cs" />
+    <Compile Include="Services\Configuration\GameConfigurationFactoryTests.cs" />
+    <Compile Include="Services\Configuration\GameConfigurationReaderTests.cs" />
+    <Compile Include="Services\Configuration\MainConfigurationFactoryTests.cs" />
+    <Compile Include="Services\Configuration\MainConfigurationReaderTests.cs" />
+    <Compile Include="Services\Configuration\GameConfigurationWriterTests.cs" />
+    <Compile Include="Services\Configuration\MainConfigurationWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BackupCreatorTests.cs" />
     <Compile Include="Services\BackupDirectoryResolverTests.cs" />

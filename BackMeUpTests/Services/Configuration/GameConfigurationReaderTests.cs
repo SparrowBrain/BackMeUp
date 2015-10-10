@@ -8,7 +8,7 @@ using BackMeUp.Wrappers;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace BackMeUp.UnitTests.Data.Services
+namespace BackMeUp.UnitTests.Services.Configuration
 {
     [TestFixture]
     public class GameConfigurationReaderTests

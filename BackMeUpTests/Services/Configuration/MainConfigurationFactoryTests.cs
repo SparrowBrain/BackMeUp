@@ -1,15 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BackMeUp.Data;
 using BackMeUp.Services.Configuration;
-using BackMeUp.Wrappers;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace BackMeUp.UnitTests.Data.Services
+namespace BackMeUp.UnitTests.Services.Configuration
 {
     [TestFixture]
     public class MainConfigurationFactoryTests
