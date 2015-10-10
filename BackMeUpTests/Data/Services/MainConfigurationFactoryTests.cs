@@ -33,16 +33,26 @@ namespace BackMeUp.UnitTests.Data.Services
             }
         }
 
-        //TODO this is bad. We need to initialize initial settings (IE, backup dir, etc)
         [Test]
-        public void GetConfiguration_ExceptionWhileReadingFile_ReturnsNewConfiguration()
+        public void GetConfiguration_ExceptionWhileReadingFile_ReturnsNewDefaultConfiguration()
         {
             var configurationFactory = GetConfigurationFactory();
             _configurationReader.Read("").ReturnsForAnyArgs(x => { throw new FileNotFoundException(); });
+            var defaultConfiguration = new MainConfiguration()
+            {
+                BackupPeriod = new TimeSpan(0, 10, 0),
+                BackupDirectory =
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                        @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames),
+                SaveGamesDirectory =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Backup")
+            };
 
             var configuration = configurationFactory.GetConfiguration();
 
-            Assert.AreEqual(new MainConfiguration(), configuration);
+
+            Assert.AreEqual(defaultConfiguration, configuration);
         }
 
         [Test]

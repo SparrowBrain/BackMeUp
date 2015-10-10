@@ -8,7 +8,7 @@ using NLog.Fluent;
 
 namespace BackMeUp.Data.Services
 {
-    public abstract class ConfigurationFactory<T> where T : new()
+    public abstract class ConfigurationFactory<T>
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -28,10 +28,11 @@ namespace BackMeUp.Data.Services
                 {
                     _logger.WarnException("Could not read configuration in \"" + ConfigurationFile + "\"", ex);
                 }
-                return new T();
+                return GetDefaultConfiguration();
             }
         }
 
         protected abstract IConfigurationReader<T> GetConfigurationReader();
+        protected abstract T GetDefaultConfiguration();
     }
 }

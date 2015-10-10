@@ -13,5 +13,10 @@ namespace BackMeUp.Data.Services
         {
             return new GameConfigurationReader(new SystemFile());
         }
+
+        protected override GameConfiguration GetDefaultConfiguration()
+        {
+            return new GameConfiguration();
+        }
     }
 }
