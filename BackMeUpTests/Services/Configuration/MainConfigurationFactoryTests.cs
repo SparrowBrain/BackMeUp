@@ -2,6 +2,7 @@
 using System.IO;
 using BackMeUp.Data;
 using BackMeUp.Services.Configuration;
+using BackMeUp.Utils;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -11,21 +12,31 @@ namespace BackMeUp.UnitTests.Services.Configuration
     public class MainConfigurationFactoryTests
     {
         private IConfigurationReader<MainConfiguration> _configurationReader;
+        private IUPlayPathResolver _uPlayPathResolver;
 
         private MainConfigurationFactory GetConfigurationFactory()
         {
             _configurationReader = Substitute.For<IConfigurationReader<MainConfiguration>>();
-            var configurationFactory = new TestableConfigurationFactory {ConfigurationReader = _configurationReader};
+            _uPlayPathResolver = Substitute.For<IUPlayPathResolver>();
+            _uPlayPathResolver.GetUPlayInstallationDirectory()
+                .Returns(@"C:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher");
+            var configurationFactory = new TestableConfigurationFactory {ConfigurationReader = _configurationReader, UPlayPathResolver = _uPlayPathResolver};
             return configurationFactory;
         }
 
         private class TestableConfigurationFactory : MainConfigurationFactory
         {
             public IConfigurationReader<MainConfiguration> ConfigurationReader { get; set; }
+            public IUPlayPathResolver UPlayPathResolver { get; set; }
 
             protected override IConfigurationReader<MainConfiguration> GetConfigurationReader()
             {
                 return ConfigurationReader;
+            }
+
+            protected override IUPlayPathResolver GetUPlayPathResolver()
+            {
+                return UPlayPathResolver;
             }
         }
 
@@ -37,12 +48,8 @@ namespace BackMeUp.UnitTests.Services.Configuration
             var defaultConfiguration = new MainConfiguration()
             {
                 BackupPeriod = new TimeSpan(0, 10, 0),
-                BackupDirectory =
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                        @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames),
-                SaveGamesDirectory =
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Backup")
+                SaveGamesDirectory = @"C:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\savegames",
+                BackupDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SparrowBrain\\BackMeUp\\Backup")
             };
 
             var configuration = configurationFactory.GetConfiguration();
@@ -67,6 +74,7 @@ namespace BackMeUp.UnitTests.Services.Configuration
         public void TeadDown()
         {
             _configurationReader = null;
+            _uPlayPathResolver = null;
         }
     }
 }

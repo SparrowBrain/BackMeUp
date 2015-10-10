@@ -56,13 +56,14 @@ namespace Sandbox
         private static void WriteConfigurationXml()
         {
             var configurationService = new MainConfigurationWriter(new SystemFile());
-            var configuration = new MainConfiguration
-            {
-                SaveGamesDirectory = @"C:\Saves",
-                BackupDirectory = @"C:\Backup",
-                BackupPeriod = TimeSpan.FromMinutes(10)
-            };
+            //var configuration = new MainConfiguration
+            //{
+            //    SaveGamesDirectory = @"C:\Saves",
+            //    BackupDirectory = @"C:\Backup",
+            //    BackupPeriod = TimeSpan.FromMinutes(10)
+            //};
 
+            var configuration = new MainConfigurationFactory().GetConfiguration();
             configurationService.Write("abc.xml", configuration);
         }
 

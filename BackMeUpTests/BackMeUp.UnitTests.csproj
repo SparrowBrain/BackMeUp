@@ -63,6 +63,7 @@
     <Compile Include="Utils\Crc16Tests.cs" />
     <Compile Include="Utils\DirectoryNameFixerTests.cs" />
     <Compile Include="Utils\FileOperationHelperTests.cs" />
+    <Compile Include="Utils\UPlayPathResolverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BackMeUp\BackMeUp.csproj">
