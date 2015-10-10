@@ -11,6 +11,7 @@
     <AssemblyName>BackMeUp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>a2f4811b</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,6 +41,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,15 +51,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\GameConfiguration.cs" />
     <Compile Include="Data\Services\ConfigurationFactory.cs" />
     <Compile Include="Data\Services\ConfigurationReader.cs" />
     <Compile Include="Data\Services\ConfigurationWriter.cs" />
+    <Compile Include="Data\Services\GameConfigurationFactory.cs" />
+    <Compile Include="Data\Services\GameConfigurationReader.cs" />
+    <Compile Include="Data\Services\GameConfigurationWriter.cs" />
+    <Compile Include="Data\Services\IConfigurationReader.cs" />
+    <Compile Include="Data\Services\MainConfigurationFactory.cs" />
+    <Compile Include="Data\Services\MainConfigurationReader.cs" />
+    <Compile Include="Data\Services\MainConfigurationWriter.cs" />
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />
     <Compile Include="Services\IBackupDirectoryResolver.cs" />
     <Compile Include="Utils\Comparer.cs" />
-    <Compile Include="Data\Configuration.cs" />
+    <Compile Include="Data\MainConfiguration.cs" />
     <Compile Include="Data\Constants.cs" />
     <Compile Include="Wrappers\IDirectory.cs" />
     <Compile Include="Wrappers\IFile.cs" />

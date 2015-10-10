@@ -1,27 +1,19 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 using BackMeUp.Wrappers;
-using NLog;
 
 namespace BackMeUp.Data.Services
 {
-    public interface IConfigurationReader
-    {
-        Configuration Read(string configurationXml);
-    }
-
-    public class ConfigurationReader : IConfigurationReader
+    public abstract class ConfigurationReader<T> : IConfigurationReader<T>
     {
         private IFile File { get; set; }
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public ConfigurationReader(IFile file)
+        protected ConfigurationReader(IFile file)
         {
             File = file;
         }
 
-        public Configuration Read(string configurationXml)
+        public T Read(string configurationXml)
         {
             if (!File.Exists(configurationXml))
             {
@@ -31,8 +23,8 @@ namespace BackMeUp.Data.Services
             var readStream = GetReadStream(configurationXml);
             using (readStream)
             {
-                var serializer = new XmlSerializer(typeof(Configuration));
-                return (Configuration) serializer.Deserialize(readStream);
+                var serializer = new XmlSerializer(typeof(T));
+                return (T) serializer.Deserialize(readStream);
             }
         }
 

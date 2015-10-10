@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using BackMeUp.Data;
 using BackMeUp.Utils;
 using NLog;
@@ -38,12 +43,11 @@ namespace BackMeUp.Services
             var backupPath = _backupDirectoryResolver.GetSaveFilesBackupPath(saveGameFilesPath, newTimedBackupPath);
 
             _fileOperationsHelper.CopyDirectory(saveGameFilesPath, backupPath);
-
-            if (Logger.IsDebugEnabled)
+            
+            if (Logger.IsInfoEnabled)
             {
-                Logger.Debug("{0}: Backup created={1}", "CreateBackup()", backupPath);
+                Logger.Info("{0}: Backup created={1}", "CreateBackup()", backupPath);
             }
         }
     }
-
 }

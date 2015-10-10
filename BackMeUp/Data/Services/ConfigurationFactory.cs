@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackMeUp.Wrappers;
+using NLog;
+using NLog.Fluent;
 
 namespace BackMeUp.Data.Services
 {
-    public class ConfigurationFactory
+    public abstract class ConfigurationFactory<T> where T : new()
     {
-        private const string ConfigurationFile = "Data\\configuration.xml";
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Configuration GetConfiguration()
+        protected abstract string ConfigurationFile { get; }
+
+        public T GetConfiguration()
         {
             var configurationReader = GetConfigurationReader();
             try
@@ -21,13 +24,14 @@ namespace BackMeUp.Data.Services
             }
             catch (Exception ex)
             {
-                return new Configuration();
+                if (_logger.IsWarnEnabled)
+                {
+                    _logger.WarnException("Could not read configuration in \"" + ConfigurationFile + "\"", ex);
+                }
+                return new T();
             }
         }
 
-        protected virtual IConfigurationReader GetConfigurationReader()
-        {
-            return new ConfigurationReader(new SystemFile());
-        }
+        protected abstract IConfigurationReader<T> GetConfigurationReader();
     }
 }

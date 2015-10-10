@@ -3,34 +3,31 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using BackMeUp.Wrappers;
-using NLog;
 
 namespace BackMeUp.Data.Services
 {
-    public class ConfigurationWriter
+    public abstract class ConfigurationWriter<T>
     {
         private IFile File { get; set; }
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public ConfigurationWriter(IFile file)
+        protected ConfigurationWriter(IFile file)
         {
             File = file;
         }
 
-        protected virtual Stream GetWriteStream(string configurationXml)
+        protected virtual Stream GetWriteStream(string xmlFile)
         {
-            return new FileStream(configurationXml, FileMode.Create);
+            return new FileStream(xmlFile, FileMode.Create);
         }
 
-        public void Write(string configurationXml, Configuration configuration)
+        public void Write(string xmlFile, T configuration)
         {
-            var writeStream = GetWriteStream(configurationXml);
+            var writeStream = GetWriteStream(xmlFile);
             using (writeStream)
             {
-                var serializer = new XmlSerializer(typeof (Configuration));
-                var xmlWriterSettings = new XmlWriterSettings {Encoding = Encoding.UTF8, Indent = true};
-                var xmlWriter = XmlWriter.Create((Stream) writeStream, xmlWriterSettings);
+                var serializer = new XmlSerializer(typeof(T));
+                var xmlWriterSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
+                var xmlWriter = XmlWriter.Create((Stream)writeStream, xmlWriterSettings);
                 serializer.Serialize(xmlWriter, configuration);
             }
         }

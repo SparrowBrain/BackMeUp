@@ -22,7 +22,7 @@ namespace Sandbox
         private const string RelativeProgramFilesLocation = @"Ubisoft\Ubisoft Game Launcher\savegames";
         private const string MyUserDir = "45922324-ba0e-489b-b7a9-1a09511c7b45";
 
-        private static readonly Configuration Configuration = new Configuration
+        private static readonly MainConfiguration Configuration = new MainConfiguration
         {
             BackupDirectory = "H:\\Backup",
             SaveGamesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
@@ -42,7 +42,8 @@ namespace Sandbox
 
         static void Main(string[] args)
         {
-            WriteConfigurationXml();
+            //WriteConfigurationXml();
+            //WriteConfigurationGameList();
 
             //Backup();
             //Watcher();
@@ -54,16 +55,26 @@ namespace Sandbox
 
         private static void WriteConfigurationXml()
         {
-            var configurationService = new ConfigurationWriter(new SystemFile());
-            var configuration = new Configuration
+            var configurationService = new MainConfigurationWriter(new SystemFile());
+            var configuration = new MainConfiguration
             {
                 SaveGamesDirectory = @"C:\Saves",
                 BackupDirectory = @"C:\Backup",
-                BackupPeriod = TimeSpan.FromMinutes(10),
-                GameList = new List<Game>() { new Game(12), new Game("Far Cry 3", 46) }
+                BackupPeriod = TimeSpan.FromMinutes(10)
             };
 
             configurationService.Write("abc.xml", configuration);
+        }
+
+        private static void WriteConfigurationGameList()
+        {
+            var configurationService = new GameConfigurationWriter(new SystemFile());
+            var configuration = new GameConfiguration
+            {
+                Games = new List<Game>() { new Game(12), new Game("Far Cry 3", 46) }
+            };
+
+            configurationService.Write("GameList.xml", configuration);
         }
 
         private static void FullBackupJob()
@@ -110,7 +121,7 @@ namespace Sandbox
 
         private static void BackupProcess()
         {
-            var period = new TimeSpan(0, 10, 0);
+            var period = new TimeSpan(0, 1, 0);
             while (true)
             {
                 FullBackupJob();

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BackMeUp.Data;
 using BackMeUp.Data.Services;
 using BackMeUp.Wrappers;
 using NSubstitute;
@@ -11,13 +9,13 @@ using NUnit.Framework;
 namespace BackMeUp.UnitTests.Data.Services
 {
     [TestFixture]
-    public class ConfigurationReaderTests
+    public class MainConfigurationReaderTests
     {
         private IFile _file;
 
         private static readonly string ConfigurationToRead =
             @"<?xml version=""1.0"" encoding=""utf-8""?>" + Environment.NewLine +
-            @"<Configuration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">" +
+            @"<MainConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">" +
             Environment.NewLine +
             @"  <BackupDirectory>C:\Backup</BackupDirectory>" + Environment.NewLine +
             @"  <SaveGamesDirectory>C:\Saves</SaveGamesDirectory>" + Environment.NewLine +
@@ -32,19 +30,19 @@ namespace BackMeUp.UnitTests.Data.Services
             @"      <SaveGameNumber>46</SaveGameNumber>" + Environment.NewLine +
             @"    </Game>" + Environment.NewLine +
             @"  </GameList>" + Environment.NewLine +
-            @"</Configuration>";
+            @"</MainConfiguration>";
 
         private readonly byte[] _configurationToReadBytes = Encoding.UTF8.GetBytes(ConfigurationToRead);
 
-        private TestableConfigurationReader GetConfigurationReader()
+        private TestableMainConfigurationReader GetConfigurationReader()
         {
             _file = Substitute.For<IFile>();
-            return new TestableConfigurationReader(_file);
+            return new TestableMainConfigurationReader(_file);
         }
 
-        private class TestableConfigurationReader : ConfigurationReader
+        private class TestableMainConfigurationReader : MainConfigurationReader
         {
-            public TestableConfigurationReader(IFile file) : base(file)
+            public TestableMainConfigurationReader(IFile file) : base(file)
             {
             }
 
@@ -117,20 +115,6 @@ namespace BackMeUp.UnitTests.Data.Services
             var configuration = configurationService.Read("configuration.xml");
 
             Assert.AreEqual(TimeSpan.FromMinutes(10), configuration.BackupPeriod);
-        }
-
-        [Test]
-        public void Read_FileContainsGameList_ConfigurationWithGameList()
-        {
-            var configurationService = GetConfigurationReader();
-            _file.Exists("configuration.xml").Returns(true);
-            var memoryStream = new MemoryStream(_configurationToReadBytes);
-            configurationService.StreamToUse = memoryStream;
-
-            var configuration = configurationService.Read("configuration.xml");
-
-            var expectedGameList = new List<Game> {new Game(12), new Game("Far Cry 3", 46)};
-            Assert.AreEqual(expectedGameList, configuration.GameList);
         }
         
         [TearDown]

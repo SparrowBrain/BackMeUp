@@ -11,7 +11,7 @@ namespace BackMeUp.UnitTests.Services
     [TestFixture]
     public class SaveWatcherTests
     {
-        private readonly Configuration _configuration = new Configuration
+        private readonly MainConfiguration _configuration = new MainConfiguration
         {
             BackupDirectory = @"E:\Backups",
             SaveGamesDirectory = @"C:\savegames"

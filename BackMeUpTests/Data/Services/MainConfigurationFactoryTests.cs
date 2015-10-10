@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,22 +12,22 @@ using NUnit.Framework;
 namespace BackMeUp.UnitTests.Data.Services
 {
     [TestFixture]
-    public class ConfigurationFactoryTests
+    public class MainConfigurationFactoryTests
     {
-        private IConfigurationReader _configurationReader;
+        private IConfigurationReader<MainConfiguration> _configurationReader;
 
-        private ConfigurationFactory GetConfigurationFactory()
+        private MainConfigurationFactory GetConfigurationFactory()
         {
-            _configurationReader = Substitute.For<IConfigurationReader>();
+            _configurationReader = Substitute.For<IConfigurationReader<MainConfiguration>>();
             var configurationFactory = new TestableConfigurationFactory {ConfigurationReader = _configurationReader};
             return configurationFactory;
         }
 
-        private class TestableConfigurationFactory : ConfigurationFactory
+        private class TestableConfigurationFactory : MainConfigurationFactory
         {
-            public IConfigurationReader ConfigurationReader { get; set; }
+            public IConfigurationReader<MainConfiguration> ConfigurationReader { get; set; }
 
-            protected override IConfigurationReader GetConfigurationReader()
+            protected override IConfigurationReader<MainConfiguration> GetConfigurationReader()
             {
                 return ConfigurationReader;
             }
@@ -43,14 +42,14 @@ namespace BackMeUp.UnitTests.Data.Services
 
             var configuration = configurationFactory.GetConfiguration();
 
-            Assert.AreEqual(new Configuration(), configuration);
+            Assert.AreEqual(new MainConfiguration(), configuration);
         }
 
         [Test]
         public void GetConfiguration_ReadsConfiguration_ReturnsConfiguration()
         {
             var configurationFactory = GetConfigurationFactory();
-            var expectedConfiguration = new Configuration {BackupDirectory = "C:\\A", SaveGamesDirectory = "C:\\B"};
+            var expectedConfiguration = new MainConfiguration {BackupDirectory = "C:\\A", SaveGamesDirectory = "C:\\B"};
             _configurationReader.Read("").ReturnsForAnyArgs(expectedConfiguration);
 
             var configuration = configurationFactory.GetConfiguration();

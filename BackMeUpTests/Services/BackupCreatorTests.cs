@@ -12,7 +12,7 @@ namespace BackMeUp.UnitTests.Services
     {
         private BackupCreator GetBackupCreator(out IFileOperationHelper fakeFileOperationsHelper)
         {
-            var configuration = new Configuration
+            var configuration = new MainConfiguration
             {
                 BackupDirectory = @"E:\Backups",
                 SaveGamesDirectory = @"C:\Program Files(x86)\Ubisoft\Ubisoft Game Launcher\savegames"

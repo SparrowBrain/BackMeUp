@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BackMeUp.Data;
@@ -11,11 +10,11 @@ using NUnit.Framework;
 namespace BackMeUp.UnitTests.Data.Services
 {
     [TestFixture]
-    public class ConfigurationWriterTests
+    public class MainConfigurationWriterTests
     {
-        private class TestableConfigurationWriter : ConfigurationWriter
+        private class TestableMainConfigurationWriter : MainConfigurationWriter
         {
-            public TestableConfigurationWriter(IFile file)
+            public TestableMainConfigurationWriter(IFile file)
                 : base(file)
             {
             }
@@ -28,10 +27,10 @@ namespace BackMeUp.UnitTests.Data.Services
             public Stream StreamToUse { get; set; }
         }
         private IFile _file;
-        private TestableConfigurationWriter GetConfigurationWriter()
+        private TestableMainConfigurationWriter GetConfigurationWriter()
         {
             _file = Substitute.For<IFile>();
-            return new TestableConfigurationWriter(_file);
+            return new TestableMainConfigurationWriter(_file);
         }
 
 
@@ -41,12 +40,12 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationWriter();
             var memoryStream = new MemoryStream();
             configurationService.StreamToUse = memoryStream;
-            var configuration = new Configuration();
+            var configuration = new MainConfiguration();
 
             configurationService.Write("configuration.xml", configuration);
 
             var configurationXml = Encoding.UTF8.GetString(memoryStream.GetBuffer());
-            StringAssert.Contains("<Configuration", configurationXml);
+            StringAssert.Contains("<MainConfiguration", configurationXml);
         }
 
         [Test]
@@ -55,7 +54,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationWriter();
             var memoryStream = new MemoryStream();
             configurationService.StreamToUse = memoryStream;
-            var configuration = new Configuration
+            var configuration = new MainConfiguration
             {
                 SaveGamesDirectory = @"C:\Saves",
             };
@@ -72,7 +71,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationWriter();
             var memoryStream = new MemoryStream();
             configurationService.StreamToUse = memoryStream;
-            var configuration = new Configuration
+            var configuration = new MainConfiguration
             {
                 BackupDirectory = @"C:\Backup",
             };
@@ -89,7 +88,7 @@ namespace BackMeUp.UnitTests.Data.Services
             var configurationService = GetConfigurationWriter();
             var memoryStream = new MemoryStream();
             configurationService.StreamToUse = memoryStream;
-            var configuration = new Configuration
+            var configuration = new MainConfiguration
             {
                 BackupPeriod = TimeSpan.FromMinutes(10),
             };
@@ -100,23 +99,7 @@ namespace BackMeUp.UnitTests.Data.Services
             StringAssert.Contains(@"<BackupPeriodSeconds>600</BackupPeriodSeconds>", configurationXml);
         }
 
-        [Test]
-        public void Write_ConfigurationWithGameList_WritesConfigurationXmlWithGameListIntoCurrentStream()
-        {
-            var configurationService = GetConfigurationWriter();
-            var memoryStream = new MemoryStream();
-            configurationService.StreamToUse = memoryStream;
-            var configuration = new Configuration
-            {
-                GameList = new List<Game> { new Game(12), new Game("Far Cry 3", 46) }
-            };
-
-            configurationService.Write("configuration.xml", configuration);
-
-            var configurationXml = Encoding.UTF8.GetString(memoryStream.GetBuffer());
-            StringAssert.Contains(@"<GameList>", configurationXml);
-            StringAssert.Contains(@"Far Cry 3", configurationXml);
-        }
+        
 
         [TearDown]
         public void TearDown()
