@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
+using BackMeUp.Data;
 using BackMeUp.Wrappers;
 
-namespace BackMeUp.Data.Services
+namespace BackMeUp.Services.Configuration
 {
     public class MainConfigurationFactory:ConfigurationFactory<MainConfiguration>
     {

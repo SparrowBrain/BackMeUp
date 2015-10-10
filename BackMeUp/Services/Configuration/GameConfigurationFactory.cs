@@ -1,6 +1,7 @@
-﻿using BackMeUp.Wrappers;
+﻿using BackMeUp.Data;
+using BackMeUp.Wrappers;
 
-namespace BackMeUp.Data.Services
+namespace BackMeUp.Services.Configuration
 {
     public class GameConfigurationFactory:ConfigurationFactory<GameConfiguration>
     {

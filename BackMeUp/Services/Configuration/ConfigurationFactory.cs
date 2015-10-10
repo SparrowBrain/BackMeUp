@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NLog;
-using NLog.Fluent;
 
-namespace BackMeUp.Data.Services
+namespace BackMeUp.Services.Configuration
 {
     public abstract class ConfigurationFactory<T>
     {

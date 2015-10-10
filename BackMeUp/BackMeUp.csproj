@@ -52,16 +52,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\GameConfiguration.cs" />
-    <Compile Include="Data\Services\ConfigurationFactory.cs" />
-    <Compile Include="Data\Services\ConfigurationReader.cs" />
-    <Compile Include="Data\Services\ConfigurationWriter.cs" />
-    <Compile Include="Data\Services\GameConfigurationFactory.cs" />
-    <Compile Include="Data\Services\GameConfigurationReader.cs" />
-    <Compile Include="Data\Services\GameConfigurationWriter.cs" />
-    <Compile Include="Data\Services\IConfigurationReader.cs" />
-    <Compile Include="Data\Services\MainConfigurationFactory.cs" />
-    <Compile Include="Data\Services\MainConfigurationReader.cs" />
-    <Compile Include="Data\Services\MainConfigurationWriter.cs" />
+    <Compile Include="Services\Configuration\ConfigurationFactory.cs" />
+    <Compile Include="Services\Configuration\ConfigurationReader.cs" />
+    <Compile Include="Services\Configuration\ConfigurationWriter.cs" />
+    <Compile Include="Services\Configuration\GameConfigurationFactory.cs" />
+    <Compile Include="Services\Configuration\GameConfigurationReader.cs" />
+    <Compile Include="Services\Configuration\GameConfigurationWriter.cs" />
+    <Compile Include="Services\Configuration\IConfigurationReader.cs" />
+    <Compile Include="Services\Configuration\MainConfigurationFactory.cs" />
+    <Compile Include="Services\Configuration\MainConfigurationReader.cs" />
+    <Compile Include="Services\Configuration\MainConfigurationWriter.cs" />
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />

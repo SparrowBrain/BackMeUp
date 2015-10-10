@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using BackMeUp.Wrappers;
 
-namespace BackMeUp.Data.Services
+namespace BackMeUp.Services.Configuration
 {
     public abstract class ConfigurationReader<T> : IConfigurationReader<T>
     {

@@ -1,4 +1,4 @@
-﻿namespace BackMeUp.Data.Services
+﻿namespace BackMeUp.Services.Configuration
 {
     public interface IConfigurationReader<out T>
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BackMeUp.Data;
-using BackMeUp.Data.Services;
+using BackMeUp.Services.Configuration;
 using BackMeUp.Wrappers;
 using NSubstitute;
 using NUnit.Framework;

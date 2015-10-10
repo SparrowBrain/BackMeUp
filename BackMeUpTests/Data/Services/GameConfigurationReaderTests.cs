@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BackMeUp.Data;
-using BackMeUp.Data.Services;
+using BackMeUp.Services.Configuration;
 using BackMeUp.Wrappers;
 using NSubstitute;
 using NUnit.Framework;

@@ -8,8 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackMeUp;
 using BackMeUp.Data;
-using BackMeUp.Data.Services;
 using BackMeUp.Services;
+using BackMeUp.Services.Configuration;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 
