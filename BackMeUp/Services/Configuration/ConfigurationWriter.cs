@@ -2,6 +2,7 @@
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 
 namespace BackMeUp.Services.Configuration
@@ -22,6 +23,10 @@ namespace BackMeUp.Services.Configuration
 
         public void Write(string xmlFile, T configuration)
         {
+            var helper = new FileOperationHelper(File, new SystemDirectory());
+            var path = Path.GetDirectoryName(xmlFile);
+            helper.CreateDirectoryIfNotExists(path);
+
             var writeStream = GetWriteStream(xmlFile);
             using (writeStream)
             {

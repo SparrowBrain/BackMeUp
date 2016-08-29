@@ -28,10 +28,12 @@ namespace Sandbox
             SaveGamesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
         };
 
-        private static readonly Game[] _games = 
+        private static readonly Game[] _games =
         {
-            new Game ("Far Cry 3", 46),
-            new Game ("Assasin's Creed IV Back Flag", 437)
+            new Game("Far Cry 3", 46),
+            new Game("Far Cry 3 Blood Dragon", 205),
+            new Game("Assasin's Creed IV Back Flag", 437),
+            new Game("Tom Clancy's Rainbow Six Siege", 1843)
         };
 
         private static readonly IFile SystemFile = new SystemFile();
@@ -72,13 +74,29 @@ namespace Sandbox
             var configurationService = new GameConfigurationWriter(new SystemFile());
             var configuration = new GameConfiguration
             {
-                Games = new List<Game>() { new Game(12), new Game("Far Cry 3", 46) }
+                Games = new List<Game>(_games)
             };
 
-            configurationService.Write("GameList.xml", configuration);
+
+            configurationService.Write("Data\\Games.xml", configuration);
         }
 
-        private static void FullBackupJob()
+        private static List<Game> ReadGamesList()
+        {
+            try
+            {
+                var gameConfigurationReader = new GameConfigurationReader(new SystemFile());
+                var games = gameConfigurationReader.Read("Data\\Games.xml").Games;
+
+                return games;
+            }
+            catch
+            {
+                return _games.ToList();
+            }
+        }
+
+        private static void FullBackupJob(List<Game> games)
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
             var saveWatcher = new SaveWatcher(Configuration.SaveGamesDirectory, SystemDirectory);
@@ -92,7 +110,7 @@ namespace Sandbox
             }
 
             var saveGameNumber = Path.GetFileName(latestSave);
-            var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
+            var game = games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));
 
             Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
@@ -122,10 +140,12 @@ namespace Sandbox
 
         private static void BackupProcess()
         {
-            var period = new TimeSpan(0, 1, 0);
+            var games = ReadGamesList();
+
+            var period = new TimeSpan(0, 10, 0);
             while (true)
             {
-                FullBackupJob();
+                FullBackupJob(games);
                 Thread.Sleep(period);
             }
         }
