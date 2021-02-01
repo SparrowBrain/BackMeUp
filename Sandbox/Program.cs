@@ -24,7 +24,7 @@ namespace Sandbox
 
         private static readonly MainConfiguration Configuration = new MainConfiguration
         {
-            BackupDirectory = "H:\\Backup",
+            BackupDirectory = "E:\\Backup",
             SaveGamesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
         };
 
@@ -78,7 +78,7 @@ namespace Sandbox
             };
 
 
-            configurationService.Write("Data\\Games.xml", configuration);
+            configurationService.Write("Games.xml", configuration);
         }
 
         private static List<Game> ReadGamesList()
@@ -86,7 +86,7 @@ namespace Sandbox
             try
             {
                 var gameConfigurationReader = new GameConfigurationReader(new SystemFile());
-                var games = gameConfigurationReader.Read("Data\\Games.xml").Games;
+                var games = gameConfigurationReader.Read("Games.xml").Games;
 
                 return games;
             }
@@ -115,6 +115,20 @@ namespace Sandbox
 
             Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
 
+            var saveBackedUp = CheckIfSaveBackedUp(backupWatcher, game, latestSave);
+
+            if (!saveBackedUp)
+            {
+                Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
+                var backupCreator = new BackupCreator(Configuration.BackupDirectory, BackupDirectoryResolver, FileOperationsHelper);
+                backupCreator.CreateBackup(latestSave, game.Name);
+            }
+            Console.WriteLine("Done");
+            Console.WriteLine();
+        }
+
+        private static bool CheckIfSaveBackedUp(BackupWatcher backupWatcher, Game game, string latestSave)
+        {
             var latestBackupSave = backupWatcher.GetLatestGameSaveBackup(game.Name);
 
             bool saveBackedUp;
@@ -127,15 +141,7 @@ namespace Sandbox
                 var comparer = new Comparer(new Crc16(), SystemDirectory, SystemFile);
                 saveBackedUp = comparer.CompareDirectories(latestSave, latestBackupSave);
             }
-
-            if (!saveBackedUp)
-            {
-                Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
-                var backupCreator = new BackupCreator(Configuration.BackupDirectory, BackupDirectoryResolver, FileOperationsHelper);
-                backupCreator.CreateBackup(latestSave, game.Name);
-            }
-            Console.WriteLine("Done");
-            Console.WriteLine();
+            return saveBackedUp;
         }
 
         private static void BackupProcess()
