@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using BackMeUp.Data;
 using BackMeUp.Services;
 using BackMeUp.Wrappers;
 using NSubstitute;
@@ -11,16 +10,10 @@ namespace BackMeUp.UnitTests.Services
     [TestFixture]
     public class SaveWatcherTests
     {
-        private readonly MainConfiguration _configuration = new MainConfiguration
-        {
-            BackupDirectory = @"E:\Backups",
-            SaveGamesDirectory = @"C:\savegames"
-        };
-        
         private SaveWatcher GetSaveWatcher(out IDirectory directory)
         {
             directory = Substitute.For<IDirectory>();
-            var saveWatcher = new SaveWatcher(_configuration.SaveGamesDirectory, directory);
+            var saveWatcher = new SaveWatcher(@"C:\savegames", directory);
             return saveWatcher;
         }
 

@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using NLog;
+using System;
 
 namespace BackMeUp.Utils
 {
@@ -37,7 +37,7 @@ namespace BackMeUp.Utils
             }
             catch (Exception ex)
             {
-                Logger.WarnException("Failure getting registry key \"" + key + "\", value \"" + value + "\"", ex);
+                Logger.Warn(ex, "Failure getting registry key \"" + key + "\", value \"" + value + "\"");
                 return null;
             }
         }

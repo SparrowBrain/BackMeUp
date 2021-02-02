@@ -1,5 +1,4 @@
 ﻿using System;
-using BackMeUp.Data;
 using BackMeUp.Services;
 using BackMeUp.Utils;
 using NSubstitute;
@@ -12,14 +11,9 @@ namespace BackMeUp.UnitTests.Services
     {
         private BackupCreator GetBackupCreator(out IFileOperationHelper fakeFileOperationsHelper)
         {
-            var configuration = new MainConfiguration
-            {
-                BackupDirectory = @"E:\Backups",
-                SaveGamesDirectory = @"C:\Program Files(x86)\Ubisoft\Ubisoft Game Launcher\savegames"
-            };
             IBackupDirectoryResolver fakeBackupDirectoryResolver = Substitute.For<IBackupDirectoryResolver>();
             fakeFileOperationsHelper = Substitute.For<IFileOperationHelper>();
-            return new BackupCreator(configuration.BackupDirectory, fakeBackupDirectoryResolver, fakeFileOperationsHelper);
+            return new BackupCreator(@"E:\Backups", fakeBackupDirectoryResolver, fakeFileOperationsHelper);
         }
 
         [Test]

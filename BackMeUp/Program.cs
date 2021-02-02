@@ -6,9 +6,9 @@ using System.Linq;
 using System.Threading;
 using BackMeUp.Data;
 using BackMeUp.Services;
-using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 using Newtonsoft.Json;
+using BackMeUp.Utils;
 
 namespace Sandbox
 {
@@ -23,11 +23,6 @@ namespace Sandbox
         private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, SystemDirectory, new DirectoryNameFixer());
         private static readonly IFileOperationHelper FileOperationsHelper = new FileOperationHelper(SystemFile, SystemDirectory);
 
-
-        static void Main(string[] args)
-        {
-            BackupProcess();
-        }
 
         private static List<Game> ReadGamesList()
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using BackMeUp.Data;
 using BackMeUp.Wrappers;
 using NLog;
 

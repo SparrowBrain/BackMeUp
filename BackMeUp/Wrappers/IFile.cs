@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace BackMeUp.Wrappers
+﻿namespace BackMeUp.Wrappers
 {
     public interface IFile
     {
