@@ -14,14 +14,8 @@ namespace Sandbox
 {
     class Program
     {
-        private const string BackupDirectory = @"Backup";
-        private const string RelativeAppDataLocation = @"Ubisoft Game Launcher\spool";
-        private const string RelativeProgramFilesLocation = @"Ubisoft\Ubisoft Game Launcher\savegames";
-        private const string MyUserDir = "45922324-ba0e-489b-b7a9-1a09511c7b45";
-
         private static readonly MainConfiguration Configuration = new MainConfiguration(
             "E:\\Backup",
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames),
             TimeSpan.FromMinutes(10));
         
         private static readonly IFile SystemFile = new SystemFile();
@@ -55,7 +49,9 @@ namespace Sandbox
         private static void FullBackupJob(List<Game> games)
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
-            var saveWatcher = new SaveWatcher(Configuration.SaveGamesDirectory, SystemDirectory);
+
+            var saveGamesDirectory = Path.Combine(new UPlayPathResolver().GetUPlayInstallationDirectory(), Constants.SaveGames);
+            var saveWatcher = new SaveWatcher(saveGamesDirectory, SystemDirectory);
             var backupWatcher = new BackupWatcher(BackupDirectoryResolver);
 
             var latestSave = saveWatcher.GetLatestSaveFilesPath();
@@ -87,17 +83,17 @@ namespace Sandbox
         {
             var latestBackupSave = backupWatcher.GetLatestGameSaveBackup(game.Name);
 
-            bool saveBackedUp;
+            bool isSaveBackedUp;
             if (string.IsNullOrEmpty(latestBackupSave))
             {
-                saveBackedUp = false;
+                isSaveBackedUp = false;
             }
             else
             {
                 var comparer = new Comparer(new Crc16(), SystemDirectory, SystemFile);
-                saveBackedUp = comparer.CompareDirectories(latestSave, latestBackupSave);
+                isSaveBackedUp = comparer.CompareDirectories(latestSave, latestBackupSave);
             }
-            return saveBackedUp;
+            return isSaveBackedUp;
         }
 
         private static void BackupProcess()
