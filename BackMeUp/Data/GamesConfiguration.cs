@@ -4,9 +4,9 @@ using System.Text;
 
 namespace BackMeUp.Data
 {
-    public class GameConfiguration
+    public class GamesConfiguration
     {
-        public GameConfiguration()
+        public GamesConfiguration()
         {
             Games = new List<Game>();
         }
@@ -18,10 +18,10 @@ namespace BackMeUp.Data
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((GameConfiguration)obj);
+            return Equals((GamesConfiguration)obj);
         }
 
-        protected bool Equals(GameConfiguration other)
+        protected bool Equals(GamesConfiguration other)
         {
             return Games.Count == other.Games.Count &&
                    Games.Select((t, i) => t.Equals(other.Games[i])).All(equals => equals);

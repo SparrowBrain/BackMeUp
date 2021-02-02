@@ -1,25 +1,21 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Xml.Serialization;
 
 namespace BackMeUp.Data
 {
-    [Serializable]
     public class MainConfiguration
     {
-        public string BackupDirectory { get; set; }
-        
-        public string SaveGamesDirectory { get; set; }
-
-        [XmlIgnore]
-        public TimeSpan BackupPeriod { get; set; }
-
-        [DefaultValue(0)]
-        public int BackupPeriodSeconds
+        public MainConfiguration(string backupDirectory, string saveGamesDirectory, TimeSpan backupPeriod)
         {
-            get { return (int) BackupPeriod.TotalSeconds; }
-            set { BackupPeriod = TimeSpan.FromSeconds(value); }
+            BackupDirectory = backupDirectory;
+            SaveGamesDirectory = saveGamesDirectory;
+            BackupPeriod = backupPeriod;
         }
+
+        public string BackupDirectory { get; }
+        
+        public string SaveGamesDirectory { get; }
+
+        public TimeSpan BackupPeriod { get; }
         
         protected bool Equals(MainConfiguration other)
         {

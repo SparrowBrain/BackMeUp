@@ -51,14 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\GameConfiguration.cs" />
-    <Compile Include="Services\Configuration\ConfigurationFactory.cs" />
-    <Compile Include="Services\Configuration\ConfigurationReader.cs" />
-    <Compile Include="Services\Configuration\ConfigurationWriter.cs" />
-    <Compile Include="Services\Configuration\IConfigurationReader.cs" />
-    <Compile Include="Services\Configuration\MainConfigurationFactory.cs" />
-    <Compile Include="Services\Configuration\MainConfigurationReader.cs" />
-    <Compile Include="Services\Configuration\MainConfigurationWriter.cs" />
+    <Compile Include="Data\GamesConfiguration.cs" />
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />

@@ -19,11 +19,10 @@ namespace Sandbox
         private const string RelativeProgramFilesLocation = @"Ubisoft\Ubisoft Game Launcher\savegames";
         private const string MyUserDir = "45922324-ba0e-489b-b7a9-1a09511c7b45";
 
-        private static readonly MainConfiguration Configuration = new MainConfiguration
-        {
-            BackupDirectory = "E:\\Backup",
-            SaveGamesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
-        };
+        private static readonly MainConfiguration Configuration = new MainConfiguration(
+            "E:\\Backup",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames),
+            TimeSpan.FromMinutes(10));
         
         private static readonly IFile SystemFile = new SystemFile();
         private static readonly IDirectory SystemDirectory = new SystemDirectory();
@@ -41,7 +40,7 @@ namespace Sandbox
             
             try
             {
-                var games = JsonConvert.DeserializeObject<GameConfiguration>(File.ReadAllText("games.json"));
+                var games = JsonConvert.DeserializeObject<GamesConfiguration>(File.ReadAllText("games.json"));
                 return games.Games;
             }
             catch (Exception e)
@@ -105,7 +104,7 @@ namespace Sandbox
         {
             var games = ReadGamesList();
 
-            var period = new TimeSpan(0, 10, 0);
+            var period = Configuration.BackupPeriod;
             while (true)
             {
                 FullBackupJob(games);
