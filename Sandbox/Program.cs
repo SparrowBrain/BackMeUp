@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using BackMeUp;
 using BackMeUp.Data;
 using BackMeUp.Services;
-using BackMeUp.Services.Configuration;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
+using Newtonsoft.Json;
 
 namespace Sandbox
 {
@@ -27,15 +24,7 @@ namespace Sandbox
             BackupDirectory = "E:\\Backup",
             SaveGamesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Ubisoft\Ubisoft Game Launcher", Constants.SaveGames)
         };
-
-        private static readonly Game[] _games =
-        {
-            new Game("Far Cry 3", 46),
-            new Game("Far Cry 3 Blood Dragon", 205),
-            new Game("Assasin's Creed IV Back Flag", 437),
-            new Game("Tom Clancy's Rainbow Six Siege", 1843)
-        };
-
+        
         private static readonly IFile SystemFile = new SystemFile();
         private static readonly IDirectory SystemDirectory = new SystemDirectory();
         private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, SystemDirectory, new DirectoryNameFixer());
@@ -44,55 +33,23 @@ namespace Sandbox
 
         static void Main(string[] args)
         {
-            //WriteConfigurationXml();
-            //WriteConfigurationGameList();
-
-            //Backup();
-            //Watcher();
-            //BackupWatcher();
-            //FullBackupJob();
-
             BackupProcess();
-        }
-
-        private static void WriteConfigurationXml()
-        {
-            var configurationService = new MainConfigurationWriter(new SystemFile());
-            //var configuration = new MainConfiguration
-            //{
-            //    SaveGamesDirectory = @"C:\Saves",
-            //    BackupDirectory = @"C:\Backup",
-            //    BackupPeriod = TimeSpan.FromMinutes(10)
-            //};
-
-            var configuration = new MainConfigurationFactory().GetConfiguration();
-            configurationService.Write("abc.xml", configuration);
-        }
-
-        private static void WriteConfigurationGameList()
-        {
-            var configurationService = new GameConfigurationWriter(new SystemFile());
-            var configuration = new GameConfiguration
-            {
-                Games = new List<Game>(_games)
-            };
-
-
-            configurationService.Write("Games.xml", configuration);
         }
 
         private static List<Game> ReadGamesList()
         {
+            
             try
             {
-                var gameConfigurationReader = new GameConfigurationReader(new SystemFile());
-                var games = gameConfigurationReader.Read("Games.xml").Games;
-
-                return games;
+                var games = JsonConvert.DeserializeObject<GameConfiguration>(File.ReadAllText("games.json"));
+                return games.Games;
             }
-            catch
+            catch (Exception e)
             {
-                return _games.ToList();
+                Console.WriteLine("Exception occured while reading games configuration.");
+                Console.WriteLine(e);
+                Console.ReadKey();
+                throw;
             }
         }
 

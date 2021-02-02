@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace BackMeUp.Data
 {
-    [Serializable]
     public class GameConfiguration
     {
-        private List<Game> _games = new List<Game>();
-
-        public List<Game> Games
+        public GameConfiguration()
         {
-            get { return _games; }
-            set { _games = value; }
+            Games = new List<Game>();
         }
+
+        public List<Game> Games { get; }
 
         public override bool Equals(object obj)
         {
@@ -27,16 +24,13 @@ namespace BackMeUp.Data
         protected bool Equals(GameConfiguration other)
         {
             return Games.Count == other.Games.Count &&
-                   Games.Select((t, i) => t.Equals(other.Games[i])).All(@equals => @equals);
+                   Games.Select((t, i) => t.Equals(other.Games[i])).All(equals => equals);
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = Games.GetHashCode();
-                return hashCode;
-            }
+            var hashCode = Games.GetHashCode();
+            return hashCode;
         }
         
         public override string ToString()

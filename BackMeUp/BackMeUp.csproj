@@ -55,9 +55,6 @@
     <Compile Include="Services\Configuration\ConfigurationFactory.cs" />
     <Compile Include="Services\Configuration\ConfigurationReader.cs" />
     <Compile Include="Services\Configuration\ConfigurationWriter.cs" />
-    <Compile Include="Services\Configuration\GameConfigurationFactory.cs" />
-    <Compile Include="Services\Configuration\GameConfigurationReader.cs" />
-    <Compile Include="Services\Configuration\GameConfigurationWriter.cs" />
     <Compile Include="Services\Configuration\IConfigurationReader.cs" />
     <Compile Include="Services\Configuration\MainConfigurationFactory.cs" />
     <Compile Include="Services\Configuration\MainConfigurationReader.cs" />

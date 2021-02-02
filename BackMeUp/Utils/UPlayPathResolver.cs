@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.IO;
-using NLog;
 
 namespace BackMeUp.Utils
 {
@@ -25,10 +25,7 @@ namespace BackMeUp.Utils
                 return uPlayInstallationDirectory;
             }
 
-            if (Logger.IsDebugEnabled)
-            {
-                Logger.Debug("Failure to read uPlay installation directory from registry. Falling back to best guess.");
-            }
+            Logger.Warn("Failure to read uPlay installation directory from registry. Falling back to best guess.");
 
             uPlayInstallationDirectory =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),

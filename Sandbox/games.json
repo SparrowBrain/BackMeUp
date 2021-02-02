@@ -1,0 +1,32 @@
+﻿{
+    "Games": [
+        {
+            "Name": "Assasins Creed IV Black Flag",
+            "SaveGameNumber": "437"
+        },
+        {
+            "Name": "Assasins Creed Origins",
+            "SaveGameNumber": "3539"
+        },
+        {
+            "Name": "Far Cry 3",
+            "SaveGameNumber": "46"
+        },
+        {
+            "Name": "Far Cry 3 Blood Dragon",
+            "SaveGameNumber": "205"
+        },
+        {
+            "Name": "Far Cry 5",
+            "SaveGameNumber": "1803"
+        },
+        {
+            "Name": "Tom Clancy's Rainbow Six Siege",
+            "SaveGameNumber": "1843"
+        },
+        {
+            "Name": "Watch Dogs Legion",
+            "SaveGameNumber": "3353"
+        }
+    ]
+}
