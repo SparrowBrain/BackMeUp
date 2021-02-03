@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
-using BackMeUp.Data;
+﻿using BackMeUp.Data;
 using BackMeUp.Services;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace BackMeUp
 {
@@ -38,12 +38,12 @@ namespace BackMeUp
             var comparer = new Comparer(crc16, systemDirectory, systemFile);
             var backupCreator = new BackupCreator(configuration.BackupDirectory, backupDirectoryResolver, fileOperationHelper);
             var backupWatcher = new BackupWatcher(backupDirectoryResolver);
+            var games = ReadGamesList();
 
-            var backupProcess = new BackupProcess(configuration, saveWatcher, comparer, backupCreator, backupWatcher);
-            Task.Run(async()=>
+            var backupProcess = new BackupProcess(configuration, saveWatcher, comparer, backupCreator, backupWatcher, games);
+            Task.Run(async () =>
             {
-                var games = ReadGamesList();
-                await backupProcess.Run(games);
+                await backupProcess.Run();
             });
         }
 

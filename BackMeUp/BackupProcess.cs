@@ -17,17 +17,20 @@ namespace BackMeUp
         private readonly Comparer _comparer;
         private readonly BackupCreator _backupCreator;
         private readonly BackupWatcher _backupWatcher;
+        private readonly List<Game> _games;
 
-        public BackupProcess(Configuration configuration, SaveWatcher saveWatcher, Comparer comparer, BackupCreator backupCreator, BackupWatcher backupWatcher)
+        public BackupProcess(Configuration configuration, SaveWatcher saveWatcher, Comparer comparer,
+            BackupCreator backupCreator, BackupWatcher backupWatcher, List<Game> games)
         {
             _configuration = configuration;
             _saveWatcher = saveWatcher;
             _comparer = comparer;
             _backupCreator = backupCreator;
             _backupWatcher = backupWatcher;
+            _games = games;
         }
 
-        private void FullBackupJob(IEnumerable<Game> games)
+        private void FullBackupJob()
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
 
@@ -39,7 +42,7 @@ namespace BackMeUp
             }
 
             var saveGameNumber = Path.GetFileName(latestSave);
-            var game = games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
+            var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));
 
             Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
@@ -71,12 +74,12 @@ namespace BackMeUp
             return isSaveBackedUp;
         }
 
-        public async Task Run(List<Game> games)
+        public async Task Run()
         {
             var period = _configuration.BackupPeriod;
             while (true)
             {
-                FullBackupJob(games);
+                FullBackupJob();
                 await Task.Delay(period);
             }
         }
