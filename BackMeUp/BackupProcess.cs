@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using BackMeUp.Data;
 using BackMeUp.Services;
+using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 using Newtonsoft.Json;
-using BackMeUp.Utils;
 
-namespace Sandbox
+namespace BackMeUp
 {
-    class Program
+    class BackupProcess
     {
         private static readonly MainConfiguration Configuration = new MainConfiguration(
             "E:\\Backup",
@@ -91,7 +91,7 @@ namespace Sandbox
             return isSaveBackedUp;
         }
 
-        private static void BackupProcess()
+        public async Task Run()
         {
             var games = ReadGamesList();
 
@@ -99,7 +99,7 @@ namespace Sandbox
             while (true)
             {
                 FullBackupJob(games);
-                Thread.Sleep(period);
+                await Task.Delay(period);
             }
         }
     }

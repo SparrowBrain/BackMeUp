@@ -68,7 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Program.cs" />
+    <Compile Include="BackupProcess.cs" />
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />
@@ -122,7 +122,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="config.json" />
-    <None Include="games.json" />
+    <None Include="games.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="NLog.config" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
