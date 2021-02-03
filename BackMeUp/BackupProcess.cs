@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NLog;
 
 namespace BackMeUp
 {
@@ -19,6 +20,8 @@ namespace BackMeUp
         private readonly BackupWatcher _backupWatcher;
         private readonly List<Game> _games;
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public BackupProcess(Configuration configuration, SaveWatcher saveWatcher, Comparer comparer,
             BackupCreator backupCreator, BackupWatcher backupWatcher, List<Game> games)
         {
@@ -29,6 +32,12 @@ namespace BackMeUp
             _backupWatcher = backupWatcher;
             _games = games;
         }
+
+        public event EventHandler<SaveBackedUpEventArgs> SaveBackedUp;
+
+        public event EventHandler NothingHappened;
+
+        public event ErrorEventHandler ErrorHappened;
 
         private void FullBackupJob()
         {
@@ -47,13 +56,19 @@ namespace BackMeUp
 
             Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
 
-            var saveBackedUp = CheckIfSaveBackedUp(game, latestSave);
+            var isSaveBackedUp = CheckIfSaveBackedUp(game, latestSave);
 
-            if (!saveBackedUp)
+            if (isSaveBackedUp)
+            {
+                OnNothingHappened();
+            }
+            else
             {
                 Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
                 _backupCreator.CreateBackup(latestSave, game.Name);
+                OnSaveBackedUp(new SaveBackedUpEventArgs { Game = game.Name, DateTime = DateTime.Now });
             }
+
             Console.WriteLine("Done");
             Console.WriteLine();
         }
@@ -79,9 +94,33 @@ namespace BackMeUp
             var period = _configuration.BackupPeriod;
             while (true)
             {
-                FullBackupJob();
+                try
+                {
+                    FullBackupJob();
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, "Error during full backup job");
+                    OnErrorHappened(new ErrorEventArgs(e));
+                }
+
                 await Task.Delay(period);
             }
+        }
+
+        protected virtual void OnSaveBackedUp(SaveBackedUpEventArgs eventArgs)
+        {
+            SaveBackedUp?.Invoke(this, eventArgs);
+        }
+
+        protected virtual void OnNothingHappened()
+        {
+            NothingHappened?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnErrorHappened(ErrorEventArgs e)
+        {
+            ErrorHappened?.Invoke(this, e);
         }
     }
 }

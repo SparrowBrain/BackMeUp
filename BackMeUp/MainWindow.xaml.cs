@@ -1,11 +1,14 @@
-﻿using BackMeUp.Data;
+﻿using BackMeUp.Annotations;
+using BackMeUp.Data;
 using BackMeUp.Services;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -14,11 +17,37 @@ namespace BackMeUp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private AppState _appState;
+        private string _status;
+        
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public AppState AppState
+        {
+            get => _appState;
+            set
+            {
+                if (value == _appState) return;
+                _appState = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                if (value == _status) return;
+                _status = value;
+                OnPropertyChanged();
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -41,10 +70,31 @@ namespace BackMeUp
             var games = ReadGamesList();
 
             var backupProcess = new BackupProcess(configuration, saveWatcher, comparer, backupCreator, backupWatcher, games);
+            backupProcess.SaveBackedUp += BackupProcess_SaveBackedUp;
+            backupProcess.NothingHappened += BackupProcess_NothingHappened;
+            backupProcess.ErrorHappened += BackupProcess_ErrorHappened;
             Task.Run(async () =>
             {
                 await backupProcess.Run();
             });
+        }
+
+        private void BackupProcess_SaveBackedUp(object sender, SaveBackedUpEventArgs e)
+        {
+            AppState = AppState.BackedUp;
+            Status = $"BackMeUp - {e.DateTime} save backed up for {e.Game}";
+        }
+        
+        private void BackupProcess_NothingHappened(object sender, EventArgs e)
+        {
+            AppState = AppState.Nothing;
+            Status = "BackMeUp - nothing new";
+        }
+        
+        private void BackupProcess_ErrorHappened(object sender, ErrorEventArgs e)
+        {
+            AppState = AppState.Error;
+            Status = $"BackMeUp - {e.GetException().Message}";
         }
 
         private void OnExitClick(object sender, RoutedEventArgs e)
@@ -66,6 +116,14 @@ namespace BackMeUp
                 Console.ReadKey();
                 throw;
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

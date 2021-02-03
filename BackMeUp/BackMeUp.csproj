@@ -68,7 +68,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppState.cs" />
     <Compile Include="BackupProcess.cs" />
+    <Compile Include="Converters\AppStateToIconStringConverter.cs" />
+    <Compile Include="Converters\BaseConverter.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="SaveBackedUpEventArgs.cs" />
     <Compile Include="Services\BackupCreator.cs" />
     <Compile Include="Services\BackupDirectoryResolver.cs" />
     <Compile Include="Services\BackupWatcher.cs" />
@@ -138,5 +143,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\BackMeUp_blue.ico" />
+    <Resource Include="Icons\BackMeUp_red.ico" />
+    <Resource Include="Icons\BackMeUp_white.ico" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
