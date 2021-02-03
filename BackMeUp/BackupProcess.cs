@@ -1,55 +1,37 @@
-﻿using System;
+﻿using BackMeUp.Data;
+using BackMeUp.Services;
+using BackMeUp.Utils;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BackMeUp.Data;
-using BackMeUp.Services;
-using BackMeUp.Utils;
-using BackMeUp.Wrappers;
-using Newtonsoft.Json;
 
 namespace BackMeUp
 {
-    class BackupProcess
+    internal class BackupProcess
     {
-        private static readonly MainConfiguration Configuration = new MainConfiguration(
-            "E:\\Backup",
-            TimeSpan.FromMinutes(10));
+        private readonly Configuration _configuration;
+        private readonly SaveWatcher _saveWatcher;
+        private readonly Comparer _comparer;
+        private readonly BackupCreator _backupCreator;
+        private readonly BackupWatcher _backupWatcher;
 
-        private static readonly IFile SystemFile = new SystemFile();
-        private static readonly IDirectory SystemDirectory = new SystemDirectory();
-        private static readonly IBackupDirectoryResolver BackupDirectoryResolver = new BackupDirectoryResolver(Configuration.BackupDirectory, SystemDirectory, new DirectoryNameFixer());
-        private static readonly IFileOperationHelper FileOperationsHelper = new FileOperationHelper(SystemFile, SystemDirectory);
-
-
-        private static List<Game> ReadGamesList()
+        public BackupProcess(Configuration configuration, SaveWatcher saveWatcher, Comparer comparer, BackupCreator backupCreator, BackupWatcher backupWatcher)
         {
-
-            try
-            {
-                var games = JsonConvert.DeserializeObject<GamesConfiguration>(File.ReadAllText("games.json"));
-                return games.Games;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception occured while reading games configuration.");
-                Console.WriteLine(e);
-                Console.ReadKey();
-                throw;
-            }
+            _configuration = configuration;
+            _saveWatcher = saveWatcher;
+            _comparer = comparer;
+            _backupCreator = backupCreator;
+            _backupWatcher = backupWatcher;
         }
 
-        private static void FullBackupJob(List<Game> games)
+        private void FullBackupJob(IEnumerable<Game> games)
         {
             Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
 
-            var saveGamesDirectory = Path.Combine(new UPlayPathResolver().GetUPlayInstallationDirectory(), Constants.SaveGames);
-            var saveWatcher = new SaveWatcher(saveGamesDirectory, SystemDirectory);
-            var backupWatcher = new BackupWatcher(BackupDirectoryResolver);
-
-            var latestSave = saveWatcher.GetLatestSaveFilesPath();
+            var latestSave = _saveWatcher.GetLatestSaveFilesPath();
             if (string.IsNullOrEmpty(latestSave))
             {
                 Console.WriteLine("No saves found.");
@@ -62,21 +44,20 @@ namespace BackMeUp
 
             Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
 
-            var saveBackedUp = CheckIfSaveBackedUp(backupWatcher, game, latestSave);
+            var saveBackedUp = CheckIfSaveBackedUp(game, latestSave);
 
             if (!saveBackedUp)
             {
                 Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
-                var backupCreator = new BackupCreator(Configuration.BackupDirectory, BackupDirectoryResolver, FileOperationsHelper);
-                backupCreator.CreateBackup(latestSave, game.Name);
+                _backupCreator.CreateBackup(latestSave, game.Name);
             }
             Console.WriteLine("Done");
             Console.WriteLine();
         }
 
-        private static bool CheckIfSaveBackedUp(BackupWatcher backupWatcher, Game game, string latestSave)
+        private bool CheckIfSaveBackedUp(Game game, string latestSave)
         {
-            var latestBackupSave = backupWatcher.GetLatestGameSaveBackup(game.Name);
+            var latestBackupSave = _backupWatcher.GetLatestGameSaveBackup(game.Name);
 
             bool isSaveBackedUp;
             if (string.IsNullOrEmpty(latestBackupSave))
@@ -85,17 +66,14 @@ namespace BackMeUp
             }
             else
             {
-                var comparer = new Comparer(new Crc16(), SystemDirectory, SystemFile);
-                isSaveBackedUp = comparer.CompareDirectories(latestSave, latestBackupSave);
+                isSaveBackedUp = _comparer.CompareDirectories(latestSave, latestBackupSave);
             }
             return isSaveBackedUp;
         }
 
-        public async Task Run()
+        public async Task Run(List<Game> games)
         {
-            var games = ReadGamesList();
-
-            var period = Configuration.BackupPeriod;
+            var period = _configuration.BackupPeriod;
             while (true)
             {
                 FullBackupJob(games);

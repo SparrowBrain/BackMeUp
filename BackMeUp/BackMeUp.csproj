@@ -97,7 +97,7 @@
     <Compile Include="Data\Constants.cs" />
     <Compile Include="Data\Game.cs" />
     <Compile Include="Data\GamesConfiguration.cs" />
-    <Compile Include="Data\MainConfiguration.cs" />
+    <Compile Include="Data\Configuration.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

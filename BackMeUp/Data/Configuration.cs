@@ -2,9 +2,9 @@
 
 namespace BackMeUp.Data
 {
-    public class MainConfiguration
+    public class Configuration
     {
-        public MainConfiguration(string backupDirectory, TimeSpan backupPeriod)
+        public Configuration(string backupDirectory, TimeSpan backupPeriod)
         {
             BackupDirectory = backupDirectory;
             BackupPeriod = backupPeriod;
@@ -14,7 +14,7 @@ namespace BackMeUp.Data
         
         public TimeSpan BackupPeriod { get; }
         
-        protected bool Equals(MainConfiguration other)
+        protected bool Equals(Configuration other)
         {
             return string.Equals(BackupDirectory, other.BackupDirectory) &&
                    BackupPeriod.Equals(other.BackupPeriod);
@@ -40,7 +40,7 @@ namespace BackMeUp.Data
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((MainConfiguration) obj);
+            return Equals((Configuration) obj);
         }
     }
 }
