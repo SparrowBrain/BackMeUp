@@ -55,9 +55,7 @@ namespace BackMeUp
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Logger.Info("Starting up...");
-            var configuration = new Configuration(
-                "E:\\Backup",
-                TimeSpan.FromMinutes(10));
+            var configuration = ReadConfiguration();
             var uPlayPathResolver = new UPlayPathResolver();
             var saveGamesDirectory = Path.Combine(uPlayPathResolver.GetUPlayInstallationDirectory(), Constants.SaveGames);
             var systemDirectory = new SystemDirectory();
@@ -106,11 +104,21 @@ namespace BackMeUp
             Application.Current.Shutdown();
         }
 
+        private Configuration ReadConfiguration()
+        {
+            var configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+            var configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(configFile));
+            Logger.Debug($"Read configuration: {configuration}");
+            return configuration;
+        }
+
         private List<Game> ReadGamesList()
         {
             try
             {
-                var games = JsonConvert.DeserializeObject<GamesConfiguration>(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "games.json")));
+                var gamesConfigFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "games.json");
+                var games = JsonConvert.DeserializeObject<GamesConfiguration>(File.ReadAllText(gamesConfigFile));
+                Logger.Debug($"Read games configuration: {games}");
                 return games.Games;
             }
             catch (Exception e)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BackMeUp
+namespace BackMeUp.Data
 {
     public class SaveBackedUpEventArgs : EventArgs
     {
