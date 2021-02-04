@@ -110,7 +110,7 @@ namespace BackMeUp
         {
             try
             {
-                var games = JsonConvert.DeserializeObject<GamesConfiguration>(File.ReadAllText("games.json"));
+                var games = JsonConvert.DeserializeObject<GamesConfiguration>(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "games.json")));
                 return games.Games;
             }
             catch (Exception e)
