@@ -23,7 +23,7 @@ namespace BackMeUp.UnitTests.Utils
             crc16.ComputeChecksum(new byte[] {13}).Returns((ushort) 53);
             var comparer = new Comparer(crc16, directory, file);
 
-            var directoriesMatch = comparer.CompareDirectories(@"C:\saveDir", @"C:\backupDir");
+            var directoriesMatch = comparer.CompareDirectoriesSame(@"C:\saveDir", @"C:\backupDir");
 
             Assert.AreEqual(true, directoriesMatch);
         }
@@ -38,7 +38,7 @@ namespace BackMeUp.UnitTests.Utils
             directory.GetFiles(@"C:\backupDir").Returns(new[] {@"C:\backupDir\a.file"});
             var comparer = new Comparer(crc16, directory, file);
 
-            var directoriesMatch = comparer.CompareDirectories(@"C:\saveDir", @"C:\backupDir");
+            var directoriesMatch = comparer.CompareDirectoriesSame(@"C:\saveDir", @"C:\backupDir");
 
             Assert.AreEqual(false, directoriesMatch);
         }
@@ -54,7 +54,7 @@ namespace BackMeUp.UnitTests.Utils
             crc16.ComputeChecksum(Arg.Any<byte[]>()).Returns((ushort) 52);
             var comparer = new Comparer(crc16, directory, file);
 
-            var directoriesMatch = comparer.CompareDirectories(@"C:\saveDir", @"C:\backupDir");
+            var directoriesMatch = comparer.CompareDirectoriesSame(@"C:\saveDir", @"C:\backupDir");
 
             Assert.AreEqual(false, directoriesMatch);
         }
@@ -70,7 +70,7 @@ namespace BackMeUp.UnitTests.Utils
             crc16.ComputeChecksum(Arg.Any<byte[]>()).Returns((ushort) 52, new ushort[] {66});
             var comparer = new Comparer(crc16, directory, file);
 
-            var directoriesMatch = comparer.CompareDirectories(@"C:\saveDir", @"C:\backupDir");
+            var directoriesMatch = comparer.CompareDirectoriesSame(@"C:\saveDir", @"C:\backupDir");
 
             Assert.AreEqual(false, directoriesMatch);
         }
@@ -86,7 +86,7 @@ namespace BackMeUp.UnitTests.Utils
             IFile file = Substitute.For<IFile>();
             var comparer = new Comparer(crc16, directory, file);
 
-            TestDelegate actDelegate = () => comparer.CompareDirectories(sourceDir, destinationDir);
+            TestDelegate actDelegate = () => comparer.CompareDirectoriesSame(sourceDir, destinationDir);
 
             Assert.Throws<ArgumentException>(actDelegate);
         }

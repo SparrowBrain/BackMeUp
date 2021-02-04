@@ -17,7 +17,7 @@ namespace BackMeUp.Utils
         private IDirectory Directory { get; set; }
         public IFile File { get; set; }
 
-        public bool CompareDirectories(string saveDir, string backupDir)
+        public bool CompareDirectoriesSame(string saveDir, string backupDir)
         {
             if (string.IsNullOrEmpty(saveDir))
             {

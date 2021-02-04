@@ -41,12 +41,12 @@ namespace BackMeUp
 
         private void FullBackupJob()
         {
-            Console.WriteLine("{1}{0}-------------------{0}Job started", Environment.NewLine, DateTime.Now);
+            Logger.Info("-------------------Job started-------------------");
 
             var latestSave = _saveWatcher.GetLatestSaveFilesPath();
             if (string.IsNullOrEmpty(latestSave))
             {
-                Console.WriteLine("No saves found.");
+                Logger.Info("No saves found.");
                 return;
             }
 
@@ -54,38 +54,30 @@ namespace BackMeUp
             var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
                        new Game(Convert.ToInt32(saveGameNumber));
 
-            Console.WriteLine("{0} Game identified {1} for last save", DateTime.Now, game);
+            Logger.Info($"Game identified {game} for last save");
 
             var isSaveBackedUp = CheckIfSaveBackedUp(game, latestSave);
 
             if (isSaveBackedUp)
             {
+                Logger.Info("Already backed up");
                 OnNothingHappened();
             }
             else
             {
-                Console.WriteLine("{0} New save found at {1}", DateTime.Now, latestSave);
+                Logger.Info($"New save found at {latestSave}");
                 _backupCreator.CreateBackup(latestSave, game.Name);
                 OnSaveBackedUp(new SaveBackedUpEventArgs { Game = game.Name, DateTime = DateTime.Now });
             }
 
-            Console.WriteLine("Done");
-            Console.WriteLine();
+            Logger.Info("-------------------Job's' done-------------------");
         }
 
         private bool CheckIfSaveBackedUp(Game game, string latestSave)
         {
             var latestBackupSave = _backupWatcher.GetLatestGameSaveBackup(game.Name);
 
-            bool isSaveBackedUp;
-            if (string.IsNullOrEmpty(latestBackupSave))
-            {
-                isSaveBackedUp = false;
-            }
-            else
-            {
-                isSaveBackedUp = _comparer.CompareDirectories(latestSave, latestBackupSave);
-            }
+            var isSaveBackedUp = !string.IsNullOrEmpty(latestBackupSave) && _comparer.CompareDirectoriesSame(latestSave, latestBackupSave);
             return isSaveBackedUp;
         }
 

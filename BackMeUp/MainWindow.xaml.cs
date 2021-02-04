@@ -11,6 +11,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using NLog;
 
 namespace BackMeUp
 {
@@ -19,6 +20,8 @@ namespace BackMeUp
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private AppState _appState;
         private string _status;
         
@@ -52,6 +55,7 @@ namespace BackMeUp
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Logger.Info("Starting up...");
             var configuration = new Configuration(
                 "E:\\Backup",
                 TimeSpan.FromMinutes(10));
@@ -82,7 +86,7 @@ namespace BackMeUp
         private void BackupProcess_SaveBackedUp(object sender, SaveBackedUpEventArgs e)
         {
             AppState = AppState.BackedUp;
-            Status = $"BackMeUp - {e.DateTime} save backed up for {e.Game}";
+            Status = $"BackMeUp - {e.DateTime} {e.Game} backed up";
         }
         
         private void BackupProcess_NothingHappened(object sender, EventArgs e)
@@ -99,6 +103,7 @@ namespace BackMeUp
 
         private void OnExitClick(object sender, RoutedEventArgs e)
         {
+            Logger.Info("Shutting down...");
             Application.Current.Shutdown();
         }
 
