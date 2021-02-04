@@ -4,6 +4,7 @@ using BackMeUp.Services;
 using BackMeUp.Utils;
 using BackMeUp.Wrappers;
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
-using NLog;
 
 namespace BackMeUp
 {
@@ -24,7 +24,6 @@ namespace BackMeUp
 
         private AppState _appState;
         private string _status;
-        
 
         public MainWindow()
         {
@@ -88,13 +87,13 @@ namespace BackMeUp
             AppState = AppState.BackedUp;
             Status = $"BackMeUp - {e.DateTime} {e.Game} backed up";
         }
-        
+
         private void BackupProcess_NothingHappened(object sender, EventArgs e)
         {
             AppState = AppState.Nothing;
             Status = "BackMeUp - nothing new";
         }
-        
+
         private void BackupProcess_ErrorHappened(object sender, ErrorEventArgs e)
         {
             AppState = AppState.Error;
@@ -116,10 +115,8 @@ namespace BackMeUp
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception occured while reading games configuration.");
-                Console.WriteLine(e);
-                Console.ReadKey();
-                throw;
+                Logger.Error(e, "Exception occured while reading games configuration, continuing without games");
+                return new List<Game>();
             }
         }
 

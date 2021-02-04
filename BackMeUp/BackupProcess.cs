@@ -70,7 +70,7 @@ namespace BackMeUp
                 OnSaveBackedUp(new SaveBackedUpEventArgs { Game = game.Name, DateTime = DateTime.Now });
             }
 
-            Logger.Info("-------------------Job's' done-------------------");
+            Logger.Info("-------------------Job's done-------------------");
         }
 
         private bool CheckIfSaveBackedUp(Game game, string latestSave)
