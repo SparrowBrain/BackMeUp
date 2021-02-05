@@ -3,8 +3,9 @@
 
 
 ## Requirements ##
-
-
+This tool uses `.NET Framework 4.6`.
+* If you're using Windows 10, you should be good to go.
+* Otherwise download the newest version of `.NET Framework` Runtime [here](https://dotnet.microsoft.com/download/dotnet-framework).
 
 ## Installation ##
 For now **BackMeUp** is published as a simple `.zip` file. Extract it wherever you fancy (ex. `C:\BackMeUp`). Feel free to add a desktop shortcut, or configure automatic startup (below).
