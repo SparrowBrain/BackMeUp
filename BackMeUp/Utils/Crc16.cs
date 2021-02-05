@@ -1,10 +1,14 @@
-﻿using System;
+﻿// From Sanity Free Coding
+// http://www.sanity-free.com/134/standard_crc_16_in_csharp.html
+
+using System;
 
 namespace BackMeUp.Utils
 {
     public interface ICrc16
     {
         ushort ComputeChecksum(byte[] bytes);
+
         byte[] ComputeChecksumBytes(byte[] bytes);
     }
 
@@ -18,8 +22,8 @@ namespace BackMeUp.Utils
             ushort crc = 0;
             foreach (var oneByte in bytes)
             {
-                var index = (byte) (crc ^ oneByte);
-                crc = (ushort) ((crc >> 8) ^ _table[index]);
+                var index = (byte)(crc ^ oneByte);
+                crc = (ushort)((crc >> 8) ^ _table[index]);
             }
             return crc;
         }
@@ -40,7 +44,7 @@ namespace BackMeUp.Utils
                 {
                     if (((value ^ temp) & 0x0001) != 0)
                     {
-                        value = (ushort) ((value >> 1) ^ Polynomial);
+                        value = (ushort)((value >> 1) ^ Polynomial);
                     }
                     else
                     {
