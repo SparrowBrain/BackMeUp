@@ -39,7 +39,37 @@ This configuration will create backups in `E:\My_Ubisoft_Backups` and run every 
 
 ## Restoring save files ##
 ### Ubisoft save file structure ###
+Ubisoft saves by default are stored in `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher\savegames`. The structure is:
+```
+savegames
+        - user_id
+               - game_1_id
+               - game_2_id
+               ...
+```
+For example:
+```
+savegames
+        - 87762840-157e-48d1-b3e9-0d70750ef62e
+               - 46
+               - 3353
+               ...
+```
+
 ### Restoring your backups ###
+The backups are stored in this structure:
+
+`Your_Backup_Directory\game\date\savegames\user_id\game_id`
+
+For example:
+
+`Your_Backup_Directory\Far Cry 3\2015-01-30\savegames\87762840-157e-48d1-b3e9-0d70750ef62e\46`
+
+To restore a backup:
+1. Close the game
+2. Copy the `savegames` folder from the backup you want to restore to `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher`, overwritting `savegames`. Overwrite any files when asked.
+3. Profit!?!!
+
 
 ## FAQ ##
 ### The game is listed as something like 123456_Unidentified ###
