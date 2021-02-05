@@ -1,3 +1,4 @@
+:: From https://superuser.com/questions/455364/how-to-create-a-shortcut-using-a-batch-script
 @echo off
 set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
 
