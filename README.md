@@ -109,8 +109,11 @@ If you know what game was backed up, you can enter it's id in [`games.json`](htt
 Better yet, you can raise an issue/pull request, so we could include the id in a future releases.
 
 ### How to submit issues ###
+If something unexpected happens with **BackMeUp** please create an issue ticket.
 
+Attach any logs to the issue ticket that were generated when the issue happened.
 
+Please provide steps to reproduce the issue, if possible.
 
 ## Disclaimer ##
 This tool had very limited testing done to it. It is not endorsed by Ubisoft. I cannot guarantee your backed up save files will work. I cannot guarantee that backing up save files will not ruin your existing saves. In fact, [Ubisoft states that this tool will not be able to backup some of their games](https://support.ubisoft.com/en-GB/Article/000063179). While I haven't encountered any issues, I cannot guarantee you won't.
