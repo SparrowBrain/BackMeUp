@@ -1,16 +1,16 @@
 # BackMeUp - automatic save backups for Ubisoft games
 ## What is it? ##
-It:
+It's a Windows application that:
 * runs in the background;
 * periodically scans Ubisoft Connect's `savegames` direcotry for any changes;
 * copies newest saves to a backup directory;
 * stores every backed up save in a path with:
-** a readable game name;
-** a timestamp of when the backup was made;
+  * a readable game name;
+  * a timestamp of when the backup was made;
 * has a tray icon that shows application state;
 * can autostart on Windows startup, so you don't need to remember.
 
-It is something I've written after losing my save. I don't expect it would happen again, but running this removes the anxiety.
+It is something I've written after losing my 24 hour save. I don't expect it would happen again, but running this removes the anxiety.
 
 ## Requirements ##
 This tool uses `.NET Framework 4.6`.
