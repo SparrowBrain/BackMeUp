@@ -69,8 +69,9 @@ namespace BackMeUp
             var backupCreator = new BackupCreator(configuration.BackupDirectory, backupDirectoryResolver, fileOperationHelper);
             var backupWatcher = new BackupWatcher(backupDirectoryResolver);
             var games = ReadGamesList();
+            var gameName = new GameName(games);
 
-            var backupProcess = new BackupProcess(configuration, saveWatcher, comparer, backupCreator, backupWatcher, games);
+            var backupProcess = new BackupProcess(configuration, saveWatcher, comparer, backupCreator, backupWatcher, gameName);
             backupProcess.SaveBackedUp += BackupProcess_SaveBackedUp;
             backupProcess.NothingHappened += BackupProcess_NothingHappened;
             backupProcess.ErrorHappened += BackupProcess_ErrorHappened;
@@ -112,7 +113,7 @@ namespace BackMeUp
             return configuration;
         }
 
-        private List<Game> ReadGamesList()
+        private IDictionary<int, string> ReadGamesList()
         {
             try
             {
@@ -124,7 +125,7 @@ namespace BackMeUp
             catch (Exception e)
             {
                 Logger.Error(e, "Exception occured while reading games configuration, continuing without games");
-                return new List<Game>();
+                return new Dictionary<int, string>();
             }
         }
 

@@ -8,10 +8,10 @@ namespace BackMeUp.Data
     {
         public GamesConfiguration()
         {
-            Games = new List<Game>();
+            Games = new Dictionary<int, string>();
         }
 
-        public List<Game> Games { get; }
+        public IDictionary<int, string> Games { get; }
 
         public override bool Equals(object obj)
         {
@@ -23,8 +23,7 @@ namespace BackMeUp.Data
 
         protected bool Equals(GamesConfiguration other)
         {
-            return Games.Count == other.Games.Count &&
-                   Games.Select((t, i) => t.Equals(other.Games[i])).All(equals => equals);
+            return Games.Count == other.Games.Count && Games.Equals(other);
         }
 
         public override int GetHashCode()
@@ -34,13 +33,13 @@ namespace BackMeUp.Data
         }
         
         public override string ToString()
-        {
-            var gameListBuilder = new StringBuilder();
+        {            
+            var gameStringBuilder = new StringBuilder();
             foreach (var game in Games)
             {
-                gameListBuilder.AppendFormat("{0};", game);
+                gameStringBuilder.AppendFormat("{0}; ", game);
             }
-            return "GameList=[" + gameListBuilder + "]";
+            return $"GamesConfiguration: {gameStringBuilder}";
         }
     }
 }

@@ -1,32 +1,11 @@
 ﻿{
-    "Games": [
-        {
-            "Name": "Assassin's Creed IV Black Flag",
-            "SaveGameNumber": "437"
-        },
-        {
-            "Name": "Assassin's Creed Origins",
-            "SaveGameNumber": "3539"
-        },
-        {
-            "Name": "Far Cry 3",
-            "SaveGameNumber": "46"
-        },
-        {
-            "Name": "Far Cry 3 Blood Dragon",
-            "SaveGameNumber": "205"
-        },
-        {
-            "Name": "Far Cry 5",
-            "SaveGameNumber": "1803"
-        },
-        {
-            "Name": "Tom Clancy's Rainbow Six Siege",
-            "SaveGameNumber": "1843"
-        },
-        {
-            "Name": "Watch Dogs Legion",
-            "SaveGameNumber": "3353"
-        }
-    ]
+    "Games": {
+        "437": "Assassin's Creed IV Black Flag",
+        "3539": "Assassin's Creed Origins",
+        "46": "Far Cry 3",
+        "205": "Far Cry 3 Blood Dragon",
+        "1803": "Far Cry 5",
+        "1843": "Tom Clancy's Rainbow Six Siege",
+        "3353": "Watch Dogs Legion"
+    }
 }

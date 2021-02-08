@@ -3,10 +3,7 @@ using BackMeUp.Services;
 using BackMeUp.Utils;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackMeUp
@@ -18,19 +15,19 @@ namespace BackMeUp
         private readonly Comparer _comparer;
         private readonly BackupCreator _backupCreator;
         private readonly BackupWatcher _backupWatcher;
-        private readonly List<Game> _games;
+        private readonly GameName _gameName;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public BackupProcess(Configuration configuration, SaveWatcher saveWatcher, Comparer comparer,
-            BackupCreator backupCreator, BackupWatcher backupWatcher, List<Game> games)
+            BackupCreator backupCreator, BackupWatcher backupWatcher, GameName gameName)
         {
             _configuration = configuration;
             _saveWatcher = saveWatcher;
             _comparer = comparer;
             _backupCreator = backupCreator;
             _backupWatcher = backupWatcher;
-            _games = games;
+            _gameName = gameName;
         }
 
         public event EventHandler<SaveBackedUpEventArgs> SaveBackedUp;
@@ -50,14 +47,12 @@ namespace BackMeUp
                 return;
             }
 
-            var saveGameNumber = Path.GetFileName(latestSave);
-            var game = _games.FirstOrDefault(x => x.SaveGameNumber.ToString(CultureInfo.InvariantCulture).Equals(saveGameNumber)) ??
-                       new Game(Convert.ToInt32(saveGameNumber));
+            var saveGameId = Path.GetFileName(latestSave);
+            var gameName = _gameName.Resolve(Convert.ToInt32(saveGameId));
 
-            Logger.Info($"Game identified {game} for last save");
+            Logger.Info($"Game identified {gameName} for last save");
 
-            var isSaveBackedUp = CheckIfSaveBackedUp(game, latestSave);
-
+            var isSaveBackedUp = CheckIfSaveBackedUp(gameName, latestSave);
             if (isSaveBackedUp)
             {
                 Logger.Info("Already backed up");
@@ -66,16 +61,16 @@ namespace BackMeUp
             else
             {
                 Logger.Info($"New save found at {latestSave}");
-                _backupCreator.CreateBackup(latestSave, game.Name);
-                OnSaveBackedUp(new SaveBackedUpEventArgs { Game = game.Name, DateTime = DateTime.Now });
+                _backupCreator.CreateBackup(latestSave, gameName);
+                OnSaveBackedUp(new SaveBackedUpEventArgs { Game = gameName, DateTime = DateTime.Now });
             }
 
             Logger.Info("-------------------Job's done-------------------");
         }
 
-        private bool CheckIfSaveBackedUp(Game game, string latestSave)
+        private bool CheckIfSaveBackedUp(string gameName, string latestSave)
         {
-            var latestBackupSave = _backupWatcher.GetLatestGameSaveBackup(game.Name);
+            var latestBackupSave = _backupWatcher.GetLatestGameSaveBackup(gameName);
 
             var isSaveBackedUp = !string.IsNullOrEmpty(latestBackupSave) && _comparer.CompareDirectoriesSame(latestSave, latestBackupSave);
             return isSaveBackedUp;

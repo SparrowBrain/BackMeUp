@@ -104,7 +104,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\Constants.cs" />
-    <Compile Include="Data\Game.cs" />
+    <Compile Include="Services\GameName.cs" />
     <Compile Include="Data\GamesConfiguration.cs" />
     <Compile Include="Data\Configuration.cs" />
     <Compile Include="MainWindow.xaml.cs">

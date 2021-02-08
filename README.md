@@ -5,7 +5,7 @@
 ## Requirements ##
 This tool uses `.NET Framework 4.6`.
 * If you're using Windows 10, you should be good to go.
-* Otherwise download the newest version of `.NET Framework` Runtime [here](https://dotnet.microsoft.com/download/dotnet-framework).
+* Otherwise download the newest version of `.NET Framework Runtime` [here](https://dotnet.microsoft.com/download/dotnet-framework).
 
 ## Installation ##
 For now **BackMeUp** is published as a simple `.zip` file. Extract it wherever you fancy (ex. `C:\BackMeUp`). Feel free to add a desktop shortcut, or configure automatic startup (below).
@@ -35,7 +35,28 @@ Example:
 This configuration will create backups in `E:\My_Ubisoft_Backups` and run every 10 minutes.
 
 ### `games.json` ###
--- under construction
+A list that maps Ubisoft game id to a given game. The format is:
+
+`"game_id": "game_name",`
+
+Example:
+```
+{
+    "Games": {
+        "437": "Assassin's Creed IV Black Flag",
+        "3539": "Assassin's Creed Origins",
+        "46": "Far Cry 3",
+        "205": "Far Cry 3 Blood Dragon",
+        "1803": "Far Cry 5",
+        "1843": "Tom Clancy's Rainbow Six Siege",
+        "3353": "Watch Dogs Legion"
+    }
+}
+```
+
+The name is then used to create a backup folder for a specific game. If you want to add a game, just add another line. Notice that the last game doesn't have a comma after it.
+
+
 
 ## Restoring save files ##
 ### Ubisoft save file structure ###
@@ -59,25 +80,24 @@ savegames
 ### Restoring your backups ###
 The backups are stored in this structure:
 
-`Your_Backup_Directory\game\date\savegames\user_id\game_id`
+`BackupDirectory\game\date\savegames\user_id\game_id`
 
 For example:
 
-`Your_Backup_Directory\Far Cry 3\2015-01-30\savegames\87762840-157e-48d1-b3e9-0d70750ef62e\46`
+`BackupDirectory\Far Cry 3\2015-01-30\savegames\87762840-157e-48d1-b3e9-0d70750ef62e\46`
 
 To restore a backup:
 1. Close the game
 2. Copy the `savegames` folder from the backup you want to restore to `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher`, overwritting `savegames`. Overwrite any files when asked.
 3. Profit!?!!
 
-
 ## FAQ ##
 ### The game is listed as something like 123456_Unidentified ###
 This means that **BackMeUp** does not recongnize the given game id and cannot use a sensible name.
 
-If you know what game was backed up, you can enter it's id in `games.json` file. If folder is named `123456_Unidentified`, `123456` will be your game id.
+If you know what game was backed up, you can enter it's id in [`games.json`](https://github.com/SparrowBrain/BackMeUp#gamesjson) file. If folder is named `123456_Unidentified`, `123456` will be your game id.
 
-Better yet, you can raise an issue/pull request, so we could include the id in future releases.
+Better yet, you can raise an issue/pull request, so we could include the id in a future releases.
 
 ### How to submit issues ###
 
