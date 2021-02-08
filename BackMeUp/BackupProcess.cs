@@ -48,7 +48,7 @@ namespace BackMeUp
             }
 
             var saveGameId = Path.GetFileName(latestSave);
-            var gameName = _gameName.Resolve(Convert.ToInt32(saveGameId));
+            var gameName = _gameName.FromId(Convert.ToInt32(saveGameId));
 
             Logger.Info($"Game identified {gameName} for last save");
 

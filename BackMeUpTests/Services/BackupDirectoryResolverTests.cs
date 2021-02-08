@@ -70,7 +70,7 @@ namespace BackMeUp.UnitTests.Services
             IDirectory directory;
             IDirectoryNameFixer directoryNameFixer;
             var backupDirectoryResolver = CreateBackupDirectoryResolver(out directory, out directoryNameFixer);
-            directoryNameFixer.ReplaceInvalidCharacters("").ReturnsForAnyArgs(x => x.Arg<string>());
+            directoryNameFixer.RemoveInvalidCharacters("").ReturnsForAnyArgs(x => x.Arg<string>());
             directory.Exists("").ReturnsForAnyArgs(true);
             directory.GetDirectories(@"E:\Backup\Far Cry 3")
                 .Returns(new[] {@"E:\Backup\Far Cry 3\2015-01-10_212211", @"E:\Backup\Far Cry 3\2010-01-01_000000"});
@@ -93,7 +93,7 @@ namespace BackMeUp.UnitTests.Services
             IDirectory directory;
             IDirectoryNameFixer directoryNameFixer;
             var backupDirectoryResolver = CreateBackupDirectoryResolver(out directory, out directoryNameFixer);
-            directoryNameFixer.ReplaceInvalidCharacters("").ReturnsForAnyArgs("Far_Cry_");
+            directoryNameFixer.RemoveInvalidCharacters("").ReturnsForAnyArgs("Far_Cry_");
             directory.Exists("").ReturnsForAnyArgs(true);
             directory.GetDirectories(@"E:\Backup\Far_Cry_")
                 .Returns(new[] { @"E:\Backup\Far_Cry_\2015-01-10_212211", @"E:\Backup\Far_Cry_\2010-01-01_000000" });
@@ -120,7 +120,7 @@ namespace BackMeUp.UnitTests.Services
             IDirectory directory;
             IDirectoryNameFixer directoryNameFixer;
             var backupDirectoryResolver = CreateBackupDirectoryResolver(out directory, out directoryNameFixer);
-            directoryNameFixer.ReplaceInvalidCharacters("").ReturnsForAnyArgs(x => x.Arg<string>());
+            directoryNameFixer.RemoveInvalidCharacters("").ReturnsForAnyArgs(x => x.Arg<string>());
             directory.Exists("").ReturnsForAnyArgs(true);
             directory.GetDirectories(@"E:\Backup\Far Cry 3")
                 .Returns(new[] { @"E:\Backup\Far Cry 3\2015-01-10_212211", @"E:\Backup\Far Cry 3\2010-01-01_000000" });
@@ -158,8 +158,8 @@ namespace BackMeUp.UnitTests.Services
             IDirectory directory;
             IDirectoryNameFixer directoryNameFixer;
             var backupDirectoryResolver = CreateBackupDirectoryResolver(out directory, out directoryNameFixer);
-            directoryNameFixer.ReplaceInvalidCharacters("").ReturnsForAnyArgs(x => x.Arg<string>());
-            directoryNameFixer.ReplaceInvalidCharacters("Far:Cry?").Returns("Far_Cry_");
+            directoryNameFixer.RemoveInvalidCharacters("").ReturnsForAnyArgs(x => x.Arg<string>());
+            directoryNameFixer.RemoveInvalidCharacters("Far:Cry?").Returns("Far_Cry_");
 
             var newTimedGameBackupPath = backupDirectoryResolver.GetNewTimedGameBackupPath(gameName);
 

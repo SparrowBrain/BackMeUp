@@ -15,7 +15,7 @@ namespace BackMeUp.UnitTests.Services
             var games = new Dictionary<int, string> { { expectedId, expectedName } };
             var sut = new GameName(games);
 
-            var name = sut.Resolve(expectedId);
+            var name = sut.FromId(expectedId);
 
             Assert.AreEqual(expectedName, name);
         }
@@ -28,7 +28,7 @@ namespace BackMeUp.UnitTests.Services
             var games = new Dictionary<int, string>();
             var sut = new GameName(games);
 
-            var name = sut.Resolve(expectedId);
+            var name = sut.FromId(expectedId);
 
             Assert.AreEqual(expectedName, name);
         }

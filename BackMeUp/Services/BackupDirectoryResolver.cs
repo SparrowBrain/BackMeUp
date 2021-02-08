@@ -97,7 +97,7 @@ namespace BackMeUp.Services
                 throw new ArgumentException("gameName");
             }
 
-            gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
+            gameName = _directoryNameFixer.RemoveInvalidCharacters(gameName);
             var now = SystemTime.Now();
             var timedFolderName = now.ToString(DateTimeFormat);
             return Path.Combine(_backupDirectory, gameName, timedFolderName);
@@ -110,7 +110,7 @@ namespace BackMeUp.Services
                 throw new ArgumentException("gameName");
             }
 
-            gameName = _directoryNameFixer.ReplaceInvalidCharacters(gameName);
+            gameName = _directoryNameFixer.RemoveInvalidCharacters(gameName);
             var gameBackupPath = Path.Combine(_backupDirectory, gameName);
             if (!_directory.Exists(gameBackupPath))
             {

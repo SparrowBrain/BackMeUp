@@ -56,8 +56,6 @@ Example:
 
 The name is then used to create a backup folder for a specific game. If you want to add a game, just add another line. Notice that the last game doesn't have a comma after it.
 
-
-
 ## Restoring save files ##
 ### Ubisoft save file structure ###
 Ubisoft saves by default are stored in `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher\savegames`. The structure is:
@@ -88,8 +86,9 @@ For example:
 
 To restore a backup:
 1. Close the game
-2. Copy the `savegames` folder from the backup you want to restore to `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher`, overwritting `savegames`. Overwrite any files when asked.
-3. Profit!?!!
+2. Close Ubisoft Connect
+3. Copy the `savegames` folder from the backup you want to restore to `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher`, overwritting `savegames`. Overwrite any files when asked.
+4. Profit!?!!
 
 ## FAQ ##
 ### The game is listed as something like 123456_Unidentified ###
@@ -114,3 +113,5 @@ This tool is largely inspired by Walker Moore's (fauxtronic) [acrbackup.bat scri
 `startup-add.bat` is basically [this response](https://superuser.com/questions/455364/how-to-create-a-shortcut-using-a-batch-script) by [Dennis](https://superuser.com/users/101836/dennis) in a superuser thread.
 
 CRC16 from [Sanity Free](http://www.sanity-free.com/134/standard_crc_16_in_csharp.html)
+
+Most of the game ids are taken from [Haoose's UPLAY_GAME_ID](https://github.com/Haoose/UPLAY_GAME_ID)

@@ -11,7 +11,7 @@ namespace BackMeUp.Data
             _games = games;
         }
 
-        public string Resolve(int id)
+        public string FromId(int id)
         {
             return _games.TryGetValue(id, out var name) ? name : $"{id}_Unidentified";
         }

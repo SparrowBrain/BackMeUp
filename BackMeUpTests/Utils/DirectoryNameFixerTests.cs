@@ -12,41 +12,41 @@ namespace BackMeUp.UnitTests.Utils
         }
 
         [Test]
-        public void ReplaceInvalidCharacters_GetsGoodPath_ReturnsGoodPath()
+        public void RemoveInvalidCharacters_GetsGoodPath_ReturnsGoodPath()
         {
             var directoryNameFixer = MakeDirectoryNameFixer();
 
-            var result = directoryNameFixer.ReplaceInvalidCharacters(@"What");
+            var result = directoryNameFixer.RemoveInvalidCharacters(@"What");
 
             StringAssert.AreEqualIgnoringCase(@"What", result);
         }
 
         [Test]
-        public void ReplaceInvalidCharacters_GetsDirectoryWithChar31_ReturnsChar31ReplacedWithUnderscore()
+        public void RemoveInvalidCharacters_GetsDirectoryWithChar31_ReturnsChar31Removed()
         {
             var directoryNameFixer = MakeDirectoryNameFixer();
 
-            var result = directoryNameFixer.ReplaceInvalidCharacters(string.Format(@"What{0}No!",(char)31));
+            var result = directoryNameFixer.RemoveInvalidCharacters(string.Format(@"What{0}No!",(char)31));
 
-            StringAssert.AreEqualIgnoringCase(@"What_No!", result);
+            StringAssert.AreEqualIgnoringCase(@"WhatNo!", result);
         }
 
         [Test]
-        public void ReplaceInvalidCharacters_GetsDirectoryWithQuestionMark_ReturnsQuestionMarkReplacedWithUnderscore()
+        public void RemoveInvalidCharacters_GetsDirectoryWithQuestionMark_ReturnsMultipleInvalidCharactersRemoved()
         {
             var directoryNameFixer = MakeDirectoryNameFixer();
 
-            var result = directoryNameFixer.ReplaceInvalidCharacters(@"What?\/:No!");
+            var result = directoryNameFixer.RemoveInvalidCharacters(@"What?\/:No!");
 
-            StringAssert.AreEqualIgnoringCase(@"What____No!", result);
+            StringAssert.AreEqualIgnoringCase(@"WhatNo!", result);
         }
 
         [Test]
-        public void ReplaceInvalidCharacters_GetsNullDirectory_ReturnsNull()
+        public void RemoveInvalidCharacters_GetsNullDirectory_ReturnsNull()
         {
             var directoryNameFixer = MakeDirectoryNameFixer();
 
-            var result = directoryNameFixer.ReplaceInvalidCharacters(null);
+            var result = directoryNameFixer.RemoveInvalidCharacters(null);
 
             StringAssert.AreEqualIgnoringCase(null, result);
         }

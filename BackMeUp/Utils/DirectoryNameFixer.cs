@@ -5,12 +5,12 @@ namespace BackMeUp.Utils
 {
     public interface IDirectoryNameFixer
     {
-        string ReplaceInvalidCharacters(string directoryName);
+        string RemoveInvalidCharacters(string directoryName);
     }
 
     public class DirectoryNameFixer : IDirectoryNameFixer
     {
-        public string ReplaceInvalidCharacters(string directoryName)
+        public string RemoveInvalidCharacters(string directoryName)
         {
             if (string.IsNullOrEmpty(directoryName))
             {
@@ -21,7 +21,7 @@ namespace BackMeUp.Utils
             {
                 if (directoryName.Contains(invalidCharacter))
                 {
-                    directoryName = directoryName.Replace(invalidCharacter, '_');
+                    directoryName = string.Concat(directoryName.Split(invalidCharacter));
                 }
             }
 
