@@ -1,6 +1,16 @@
 # BackMeUp - automatic save backups for Ubisoft games
-## Intro ##
+## What is it? ##
+It:
+* runs in the background;
+* periodically scans Ubisoft Connect's `savegames` direcotry for any changes;
+* copies newest saves to a backup directory;
+* stores every backed up save in a path with:
+** a readable game name;
+** a timestamp of when the backup was made;
+* has a tray icon that shows application state;
+* can autostart on Windows startup, so you don't need to remember.
 
+It is something I've written after losing my save. I don't expect it would happen again, but running this removes the anxiety.
 
 ## Requirements ##
 This tool uses `.NET Framework 4.6`.
@@ -58,7 +68,7 @@ The name is then used to create a backup folder for a specific game. If you want
 
 ## Restoring save files ##
 ### Ubisoft save file structure ###
-Ubisoft saves by default are stored in `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher\savegames`. The structure is:
+Ubisoft saves by default are stored in `%PROGRAMFILES(X86)%\Ubisoft\Ubisoft Game Launcher\savegames`. Folder structure is:
 ```
 savegames
         - user_id
