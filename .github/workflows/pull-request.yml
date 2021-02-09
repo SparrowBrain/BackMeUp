@@ -34,12 +34,12 @@ jobs:
         xpath: '/test-run/@result'
     - name: Evaluate results
       uses: actions/github-script@v3
-        with:
-          script: |
-            if (${{ steps.getxml.outputs.info }} !== "Passed") {
-              throw "Tests failed"
-            }
-            return 0;
+      with:
+        script: |
+          if (${{ steps.getxml.outputs.info }} !== "Passed") {
+            throw "Tests failed"
+          }
+          return 0;
     - name: Upload Artifact
       uses: actions/upload-artifact@master
       with:
