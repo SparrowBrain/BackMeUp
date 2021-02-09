@@ -24,8 +24,8 @@ jobs:
     - name: Build with MSBuild
       run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
     - name: Run NUnit # very fragile
-      run: ${{ env.GITHUB_WORKSPACE }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
-      working-directory: ${{ env.GITHUB_WORKSPACE }}\${{ env.NUNIT_PATH }}
+      run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
+      working-directory: ${{ github.workspace }}\${{ env.NUNIT_PATH }}
     - name: Parse results
       id: getxml
       uses: mavrosxristoforos/get-xml-info@1.0
