@@ -22,7 +22,7 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Build with MSBuild
-      run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release\
+      run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
     - name: Run NUnit # very fragile
       run: nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
       working-directory: ${{ env.NUNIT_PATH }}
