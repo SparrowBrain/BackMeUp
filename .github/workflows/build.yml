@@ -3,7 +3,8 @@ name: Build
 on: [push]
 
 env:
-  SOLUTION_NAME: BackMeUp.sln   
+  SOLUTION_NAME: BackMeUp.sln
+  PROJECT_NAME: BackMeUp
 
 jobs:
   build:
@@ -19,3 +20,8 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Build with MSBuild
       run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: ${{ env.PROJECT_NAME }}
+        path: ${{ env.PROJECT_NAME }}\bin\Release\Publish
