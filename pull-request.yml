@@ -1,0 +1,47 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ master ]
+
+env:
+  SOLUTION_NAME: BackMeUp.sln
+  PROJECT_NAME: BackMeUp
+  NUNIT_PATH: \packages\NUnit.ConsoleRunner.3.12.0\tools
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Nuget.exe
+      uses: nuget/setup-nuget@v1
+    - name: Restore packages
+      run: nuget restore ${{ env.SOLUTION_NAME }}
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Build with MSBuild
+      run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release\
+    - name: Run NUnit # very fragile
+      run: nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
+      working-directory: ${{ env.NUNIT_PATH }}
+    - name: Parse results
+      id: getxml
+      uses: mavrosxristoforos/get-xml-info@1.0
+      with:
+        xml-file: '${{ env.NUNIT_PATH }}\TestResult.xml'
+        xpath: '/test-run/@result'
+    - name: Evaluate results
+      uses: actions/github-script@v3
+        with:
+          script: |
+            if (${{ steps.getxml.outputs.info }} !== "Passed") {
+              throw "Tests failed"
+            }
+            return 0;
+    - name: Upload Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: TestResult
+        path: ${{ env.NUNIT_PATH }}\TestResult.xml
