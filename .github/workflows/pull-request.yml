@@ -24,7 +24,7 @@ jobs:
     - name: Build with MSBuild
       run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
     - name: Run NUnit # very fragile
-      run: nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
+      run: nunit3-console.exe ${{ env.GITHUB_WORKSPACE }}\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
       working-directory: ${{ env.NUNIT_PATH }}
     - name: Parse results
       id: getxml
