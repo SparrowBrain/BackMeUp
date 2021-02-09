@@ -21,7 +21,7 @@ jobs:
     - name: Build with MSBuild
       run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
     - name: Upload Artifact
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@master
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ${{ env.PROJECT_NAME }}\bin\Release\Publish
+        path: ${{ env.PROJECT_NAME }}\bin\Release
