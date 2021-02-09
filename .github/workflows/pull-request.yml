@@ -26,12 +26,17 @@ jobs:
     - name: Run NUnit # very fragile
       run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
       working-directory: ${{ github.workspace }}\${{ env.NUNIT_PATH }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: TestResult
+        path: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\TestResult.xml
     - name: Parse results
       id: getxml
       uses: mavrosxristoforos/get-xml-info@1.0
       with:
         xml-file: '${{ env.NUNIT_PATH }}\TestResult.xml'
-        xpath: '/test-run/@result'
+        xpath: '//test-run/@result'
     - name: Evaluate results
       uses: actions/github-script@v3
       with:
@@ -40,8 +45,4 @@ jobs:
             throw "Tests failed"
           }
           return 0;
-    - name: Upload Artifact
-      uses: actions/upload-artifact@master
-      with:
-        name: TestResult
-        path: ${{ env.NUNIT_PATH }}\TestResult.xml
+   
