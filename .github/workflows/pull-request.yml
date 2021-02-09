@@ -33,15 +33,15 @@ jobs:
         path: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\TestResult.xml
     - name: Parse results
       id: getxml
-      uses: mavrosxristoforos/get-xml-info@1.0
+      uses: QwerMike/xpath-action@v1
       with:
-        xml-file: '${{ env.NUNIT_PATH }}\TestResult.xml'
-        xpath: '//test-run/@result'
+        filename: '${{ env.NUNIT_PATH }}\TestResult.xml'
+        expression: '/test-run/@result'
     - name: Evaluate results
       uses: actions/github-script@v3
       with:
         script: |
-          if (${{ steps.getxml.outputs.info }} !== "Passed") {
+          if (${{ steps.getxml.outputs.result }} !== "Passed") {
             throw "Tests failed"
           }
           return 0;
