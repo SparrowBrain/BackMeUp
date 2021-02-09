@@ -1,0 +1,21 @@
+name: Build
+
+on: [push]
+
+env:
+  SOLUTION_NAME: BackMeUp.sln   
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup Nuget.exe
+      uses: warrenbuckley/Setup-Nuget@v1
+    - name: Restore packages
+      run: nuget restore ${{ env.SOLUTION_NAME }}
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
+    - name: Build with MSBuild
+      run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
