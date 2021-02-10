@@ -9,6 +9,7 @@ namespace BackMeUp.UnitTests.Utils
         [Test]
         public void ComputeChecksum_ByteArray_Checksum()
         {
+            throw new System.Exception();
             var bytes = new byte[] {19, 128, 255};
             Crc16 crc = new Crc16();
 
@@ -27,9 +28,5 @@ namespace BackMeUp.UnitTests.Utils
 
             Assert.AreEqual(new byte[]{168, 131}, checkSum);
         }
-
-
-        //ushort ComputeChecksum(byte[] bytes);
-        //byte[] ComputeChecksumBytes(byte[] bytes);
     }
 }
