@@ -31,9 +31,9 @@ jobs:
       uses: QwerMike/xpath-action@v1
       with:
         filename: '${{ env.NUNIT_PATH }}\TestResult.xml'
-        expression: 'string(//test-run/@result)'
+        expression: '//test-run/@result'
     - name: Evaluate results
-      if: ${{ steps.getxml.outputs.result != 'Passed' }}
+      if: ${{ 'steps.getxml.outputs.result' != 'result="Passed"' }}
       run: exit 1
     - name: Upload Artifact
       if: ${{ always() }}
