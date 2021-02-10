@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+
+env:
+  SOLUTION_NAME: BackMeUp.sln
+  PROJECT_NAME: BackMeUp
+  NUNIT_PATH: packages\NUnit.ConsoleRunner.3.12.0\tools
+
+jobs:
+  tag-new-version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.detect_and_tag_new_version.outputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: salsify/action-detect-and-tag-new-version@v2
+        id: detect_and_tag_new_version
+        with:
+          version-command: |
+            egrep -o '[0-9]+\.[0-9]+\.[0-9]+' ./BackMeUp/Properties/AssemblyInfo.cs
+            
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Nuget.exe
+      uses: nuget/setup-nuget@v1
+    - name: Restore packages
+      run: nuget restore ${{ env.SOLUTION_NAME }}
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Build with MSBuild
+      run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
+    - name: Run NUnit # very fragile
+      run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ${{ github.workspace }}\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
+      working-directory: ${{ github.workspace }}\${{ env.NUNIT_PATH }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ env.PROJECT_NAME }}
+        path: ${{ env.PROJECT_NAME }}\bin\Release
+        
+  release:
+    needs: [build, tag-new-version]
+    if: ${{needs.tag-new-version.outputs.tag}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.PROJECT_NAME }}
+          path: artifact/${{ env.PROJECT_NAME }}
+      - name: Generate deployment package
+        run: zip -r ${{ env.PROJECT_NAME }}_${{needs.tag-new-version.outputs.tag}}.zip .
+        working-directory: artifact
+      - name: Build Changelog
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{needs.tag-new-version.outputs.tag}}
+          release_name: Release ${{needs.tag-new-version.outputs.tag}}
+          body: ${{steps.build_changelog.outputs.changelog}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifact/${{ env.PROJECT_NAME }}_${{needs.tag-new-version.outputs.tag}}.zip
+          asset_name: ${{ env.PROJECT_NAME }}_${{needs.tag-new-version.outputs.tag}}.zip
+          asset_content_type: application/zip  
