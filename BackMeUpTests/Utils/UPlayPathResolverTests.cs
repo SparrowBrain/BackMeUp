@@ -50,7 +50,7 @@ namespace BackMeUp.UnitTests.Utils
 
             var uPlayInstallationDirectory = uPlayPathResolver.GetUPlayInstallationDirectory();
 
-            StringAssert.AreEqualIgnoringCase(@"C:\uPlay\", uPlayInstallationDirectory);
+            StringAssert.AreEqualIgnoringCase(@"D:\uPlay\", uPlayInstallationDirectory);
         }
 
         [TearDown]
