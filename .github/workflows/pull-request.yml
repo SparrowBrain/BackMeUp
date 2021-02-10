@@ -31,7 +31,7 @@ jobs:
       uses: QwerMike/xpath-action@v1
       with:
         filename: '${{ env.NUNIT_PATH }}\TestResult.xml'
-        expression: string(//test-run/@result)
+        expression: 'string(//test-run/@result)'
     - name: Evaluate results
       if: ${{ steps.getxml.outputs.result != 'Passed' }}
       run: exit 1
