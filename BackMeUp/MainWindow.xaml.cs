@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -51,6 +52,8 @@ namespace BackMeUp
                 OnPropertyChanged();
             }
         }
+
+        public string Version { get => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}"; }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
