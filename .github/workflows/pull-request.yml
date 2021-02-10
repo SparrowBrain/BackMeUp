@@ -24,25 +24,20 @@ jobs:
     - name: Build with MSBuild
       run: msbuild  ${{ env.SOLUTION_NAME }} -p:Configuration=Release
     - name: Run NUnit # very fragile
-      run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ..\..\..\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
+      run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ${{ github.workspace }}\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
       working-directory: ${{ github.workspace }}\${{ env.NUNIT_PATH }}
-    - name: Upload Artifact
-      uses: actions/upload-artifact@master
-      with:
-        name: TestResult
-        path: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\TestResult.xml
     - name: Parse results
       id: getxml
       uses: QwerMike/xpath-action@v1
       with:
         filename: '${{ env.NUNIT_PATH }}\TestResult.xml'
-        expression: '/test-run/@result'
+        expression: string(//test-run/@result)
     - name: Evaluate results
-      uses: actions/github-script@v3
+      if: ${{ steps.getxml.outputs.result != 'Passed' }}
+      run: exit 1
+    - name: Upload Artifact
+      if: ${{ always() }}
+      uses: actions/upload-artifact@master
       with:
-        script: |
-          if (${{ steps.getxml.outputs.result }} !== "Passed") {
-            throw "Tests failed"
-          }
-          return 0;
-   
+        name: TestResult
+        path: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\TestResult.xml
