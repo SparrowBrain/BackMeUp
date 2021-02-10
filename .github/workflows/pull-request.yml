@@ -26,15 +26,6 @@ jobs:
     - name: Run NUnit # very fragile
       run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ${{ github.workspace }}\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
       working-directory: ${{ github.workspace }}\${{ env.NUNIT_PATH }}
-    - name: Parse results
-      id: getxml
-      uses: QwerMike/xpath-action@v1
-      with:
-        filename: '${{ env.NUNIT_PATH }}\TestResult.xml'
-        expression: '//test-run/@result'
-    - name: Evaluate results
-      if: ${{ 'steps.getxml.outputs.result' != 'result="Passed"' }}
-      run: exit 1
     - name: Upload Artifact
       if: ${{ always() }}
       uses: actions/upload-artifact@master
