@@ -129,4 +129,4 @@ This tool is largely inspired by Walker Moore's (fauxtronic) [acrbackup.bat scri
 
 CRC16 from [Sanity Free](http://www.sanity-free.com/134/standard_crc_16_in_csharp.html)
 
-Most of the game ids are taken from [Haoose's UPLAY_GAME_ID](https://github.com/Haoose/UPLAY_GAME_ID)
+Most of the [game ids](https://github.com/SparrowBrain/BackMeUp/blob/master/BackMeUp/games.json) are taken from [Haoose's UPLAY_GAME_ID](https://github.com/Haoose/UPLAY_GAME_ID)
