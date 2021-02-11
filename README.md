@@ -1,4 +1,6 @@
-# BackMeUp - automatic save backups for Ubisoft games
+# BackMeUp
+### Automatically backup your Ubisoft savegames
+![](https://github.com/SparrowBrain/BackMeUp/workflows/CI/badge.svg)
 ## What is it? ##
 It's a Windows application that:
 * runs in the background;
@@ -104,7 +106,7 @@ To restore a backup:
 ### The game is listed as something like 123456_Unidentified ###
 This means that **BackMeUp** does not recongnize the given game id and cannot use a sensible name.
 
-If you know what game was backed up, you can enter it's id in [`games.json`](https://github.com/SparrowBrain/BackMeUp#gamesjson) file. If folder is named `123456_Unidentified`, `123456` will be your game id.
+If you know what game was backed up, you can enter its id in [`games.json`](https://github.com/SparrowBrain/BackMeUp#gamesjson) file. If folder is named `123456_Unidentified`, `123456` will be your game id.
 
 Better yet, you can raise an issue/pull request, so we could include the id in a future releases.
 
