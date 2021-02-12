@@ -35,16 +35,16 @@ Don't forget to run `startup-remove.bat` before deleting/moving the tool folder 
 ### `config.json` ###
 Main configuration file.
 * **BackupDirectory** - place to copy save files to. If configured directory does not exist, it will be created. Take notice of double backslash (`\\`) when specifying a path. *Default is "C:\Ubisoft_savegame_Backups"*.
-* **BackupPeriod** - how often backups should be created. The format is `HH:mm:ss` as in `hours:minutes:seconds`. *Default is 1 hour*.
+* **BackupPeriod** - how often backups should be created. The format is `HH:mm:ss` as in `hours:minutes:seconds`. *Default is 10 minutes*.
 
 Example:
 ```
 {
     "BackupDirectory" : "E:\\My_Ubisoft_Backups",
-    "BackupPeriod" : "00:10:00" 
+    "BackupPeriod" : "01:00:00" 
 }
 ```
-This configuration will create backups in `E:\My_Ubisoft_Backups` and run every 10 minutes.
+This configuration will create backups in `E:\My_Ubisoft_Backups` and run every hour.
 
 ### `games.json` ###
 A list that maps Ubisoft game id to a given game. The format is:
