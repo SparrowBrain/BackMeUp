@@ -1,0 +1,1 @@
+To create a new release increment Assembly version and push directry to master. The Tag and Release will be created by the pipeline.
