@@ -1,9 +1,9 @@
 ﻿<Window x:Class="BackMeUp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:converters="clr-namespace:BackMeUp.Converters"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
@@ -12,22 +12,21 @@
         Height="0"
         ShowActivated="False"
         ShowInTaskbar="False"
+        Visibility="Hidden"
         Background = "Transparent"
         AllowsTransparency = "True"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        >
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <tb:TaskbarIcon
             IconSource="{Binding Path=AppState, Converter={converters:AppStateToIconStringConverter}}"
             ToolTipText="{Binding Path=Status}"
             MenuActivation="LeftOrRightClick"
-            NoLeftClickDelay="True"
-        >
+            NoLeftClickDelay="True">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{Binding Path=Version}" StaysOpenOnClick="True" IsHitTestVisible="False"/>
+                    <MenuItem Header="{Binding Path=Version}" StaysOpenOnClick="True" IsHitTestVisible="False" />
                     <Separator></Separator>
-                    <MenuItem Header="Exit" Click="OnExitClick"/>
+                    <MenuItem Header="Exit" Click="OnExitClick" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
