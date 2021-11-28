@@ -55,7 +55,7 @@ namespace BackMeUp
 
         public string Version { get => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}"; }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Initialized(object sender, EventArgs e)
         {
             Logger.Info("Starting up...");
             var configuration = ReadConfiguration();
