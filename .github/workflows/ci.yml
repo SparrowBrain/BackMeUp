@@ -42,7 +42,7 @@ jobs:
       run: ${{ github.workspace }}\${{ env.NUNIT_PATH }}\nunit3-console.exe ${{ github.workspace }}\${{ env.PROJECT_NAME }}Tests\bin\Release\${{ env.PROJECT_NAME }}.UnitTests.dll
       working-directory: ${{ github.workspace }}\${{ env.NUNIT_PATH }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact
       with:
         name: ${{ env.PROJECT_NAME }}
         path: ${{ env.PROJECT_NAME }}\bin\Release
@@ -56,7 +56,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact
         with:
           name: ${{ env.PROJECT_NAME }}
           path: artifact/${{ env.PROJECT_NAME }}
