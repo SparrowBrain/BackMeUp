@@ -26,7 +26,7 @@ jobs:
             egrep -o '[0-9]+\.[0-9]+\.[0-9]+' ./BackMeUp/Properties/AssemblyInfo.cs
             
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@master
